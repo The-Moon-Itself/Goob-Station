@@ -27,3 +27,13 @@
   cost: 12600 # You should buy it usually if you messed up something (also it somehow fulfills the bounty for brains if it's less than 12500???)
   category: cargoproduct-category-name-science
   group: market
+
+- type: cargoProduct
+  id: ScienceTTVs
+  icon:
+    sprite: _Goobstation/Objects/Weapons/Bombs/Transfervalve.rsi
+    state: valve_1
+  product: CrateScienceTTV
+  cost: 4000
+  category: cargoproduct-category-name-science
+  group: market

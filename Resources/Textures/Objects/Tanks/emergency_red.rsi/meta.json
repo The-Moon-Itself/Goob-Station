@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Adapted by DangerRevolution from tgstation at https://github.com/tgstation/tgstation/commit/e1142f20f5e4661cb6845cfcf2dd69f864d67432",
+  "copyright": "Adapted by DangerRevolution from tgstation at https://github.com/tgstation/tgstation/commit/e1142f20f5e4661cb6845cfcf2dd69f864d67432. Transfer valve icon taken from Beestation at https://github.com/BeeStation/BeeStation-Hornet/commit/607ad8a93d04d23deb8fbd7b1585b29606f9e4e5 and modified by TheMoonItself",
   "size": {
     "x": 32,
     "y": 32
@@ -70,6 +70,9 @@
     {
       "name": "equipped-SUITSTORAGE",
       "directions": 4
+    },
+    {
+      "name": "transfervalve"
     }
   ]
 }

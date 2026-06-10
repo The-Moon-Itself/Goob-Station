@@ -18,3 +18,14 @@
     contents:
     - id: ModsuitCoreStandard
       amount: 3
+
+- type: entity
+  id: CrateScienceTTV
+  parent: CrateScienceSecure
+  name: Tank transfer valve crate
+  description: the easiest way for a scientist to get lynched. Contains three tank transfer valves. Requires science access.
+  components:
+  - type: StorageFill
+    contents:
+    - id: TransferValve
+      amount: 3

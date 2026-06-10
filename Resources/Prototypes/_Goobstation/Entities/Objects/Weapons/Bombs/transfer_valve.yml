@@ -1,0 +1,44 @@
+
+
+- type: entity
+  parent: BaseItem
+  id: TransferValve
+  name: Tank Transfer Valve
+  description: Regulates the transfer of air between two tanks.
+  components:
+  - type: Appearance
+  - type: Sprite
+    sprite: _Goobstation/Objects/Weapons/Bombs/Transfervalve.rsi
+    layers:
+    - state: valve_1
+      map: [ "enum.TransferValveVisuals.Valve" ]
+    - state: oxygen
+      map: [ "enum.TransferValveVisuals.RightTank" ]
+      visible: false
+      offset: "0, 0.125"
+    - state: plasma
+      map: [ "enum.TransferValveVisuals.LeftTank" ]
+      visible: false
+      offset: "0, 0.125"
+      scale: "-1, 1"
+    - state: device
+      map: [ "enum.TransferValveVisuals.Device" ]
+      visible: false
+      offset: "0, 0"
+  - type: Item
+    sprite: _Goobstation/Objects/Weapons/Bombs/Transfervalve.rsi
+    layers:
+    - state: valve_1
+    size: Huge
+  - type: TransferValve
+    tank1Slot:
+      whitelist:
+        components:
+          - GasTank
+      EjectSound: /Audio/Items/wrench_drop.ogg
+    tank2Slot:
+      whitelist:
+        components:
+          - GasTank
+      EjectSound: /Audio/Items/wrench_drop.ogg
+
