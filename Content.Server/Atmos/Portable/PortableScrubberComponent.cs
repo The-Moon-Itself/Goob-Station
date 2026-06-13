@@ -11,6 +11,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared.Atmos;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Guidebook;
 
 namespace Content.Server.Atmos.Portable
@@ -47,9 +48,6 @@ namespace Content.Server.Atmos.Portable
             Gas.Nitrium, // Assmos - /tg/ gases
         };
 
-        [ViewVariables(VVAccess.ReadWrite)]
-        public bool Enabled = true;
-
         /// <summary>
         /// Maximum internal pressure before it refuses to take more.
         /// </summary>
@@ -61,6 +59,15 @@ namespace Content.Server.Atmos.Portable
         /// </summary>
         [DataField, ViewVariables(VVAccess.ReadWrite)]
         public float TransferRate = 800;
+
+        /// <summary>
+        ///     Container name for the gas tank holder.
+        /// </summary>
+        [DataField("container")]
+        public string ContainerName { get; set; } = "tank_slot";
+
+        [DataField]
+        public ItemSlot GasTankSlot = new();
 
         #region GuidebookData
 

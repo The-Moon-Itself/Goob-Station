@@ -52,9 +52,11 @@ using Content.Server.Atmos.Piping.Unary.EntitySystems;
 using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.Atmos.Visuals;
 using Content.Shared.Examine;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Destructible;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Atmos.EntitySystems;
+using Robust.Shared.Containers;
 using Robust.Server.GameObjects;
 using Content.Server.NodeContainer.Nodes;
 using Content.Server.NodeContainer.NodeGroups;
@@ -64,6 +66,12 @@ using Content.Server.NodeContainer.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Database;
 using Content.Shared.Power;
+using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
+using Content.Shared.UserInterface;
+using Content.Shared.Atmos.Piping.Portable.Components;
+using Content.Shared.Atmos.Components;
+using Content.Shared.IdentityManagement;
 
 namespace Content.Server.Atmos.Portable
 {
@@ -74,20 +82,33 @@ namespace Content.Server.Atmos.Portable
         [Dependency] private readonly GasPortableSystem _gasPortableSystem = default!;
         [Dependency] private readonly AtmosphereSystem _atmosphereSystem = default!;
         [Dependency] private readonly TransformSystem _transformSystem = default!;
+        [Dependency] private readonly PowerReceiverSystem _power = default!;
         [Dependency] private readonly IAdminLogManager _adminLogger = default!;
+        [Dependency] private readonly IEntityManager _entManager = default!;
+        [Dependency] private readonly ItemSlotsSystem _slots = default!;
         [Dependency] private readonly AmbientSoundSystem _ambientSound = default!;
         [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+        [Dependency] private readonly UserInterfaceSystem _userInterfaceSystem = default!;
         [Dependency] private readonly NodeContainerSystem _nodeContainer = default!;
 
         public override void Initialize()
         {
             base.Initialize();
+            SubscribeLocalEvent<PortableScrubberComponent, EntInsertedIntoContainerMessage>(OnContainerModified);
+            SubscribeLocalEvent<PortableScrubberComponent, EntRemovedFromContainerMessage>(OnContainerModified);
+            SubscribeLocalEvent<PortableScrubberComponent, ComponentInit>(OnStartup);
+
             SubscribeLocalEvent<PortableScrubberComponent, AtmosDeviceUpdateEvent>(OnDeviceUpdated);
             SubscribeLocalEvent<PortableScrubberComponent, AnchorStateChangedEvent>(OnAnchorChanged);
             SubscribeLocalEvent<PortableScrubberComponent, PowerChangedEvent>(OnPowerChanged);
             SubscribeLocalEvent<PortableScrubberComponent, ExaminedEvent>(OnExamined);
             SubscribeLocalEvent<PortableScrubberComponent, DestructionEventArgs>(OnDestroyed);
             SubscribeLocalEvent<PortableScrubberComponent, GasAnalyzerScanEvent>(OnScrubberAnalyzed);
+
+            SubscribeLocalEvent<PortableScrubberComponent, BeforeActivatableUIOpenEvent>(OnBeforeOpened);
+            SubscribeLocalEvent<PortableScrubberComponent, PortableScrubberToggleMessage>(OnToggle);
+            SubscribeLocalEvent<PortableScrubberComponent, PortableScrubberFilterGasToggleMessage>(OnFilterGasToggled);
+            SubscribeLocalEvent<PortableScrubberComponent, PortableScrubberEjectTankMessage>(OnHoldingTankEjectMessage);
         }
 
         private bool IsFull(PortableScrubberComponent component)
@@ -95,12 +116,29 @@ namespace Content.Server.Atmos.Portable
             return component.Air.Pressure >= component.MaxPressure;
         }
 
+        private void OnStartup(EntityUid uid, PortableScrubberComponent component, ComponentInit args)
+        {
+            _slots.AddItemSlot(uid, component.ContainerName, component.GasTankSlot);
+        }
+
+        private void OnContainerModified(EntityUid uid, PortableScrubberComponent component, ContainerModifiedMessage args)
+        {
+            if (args.Container.ID != component.ContainerName)
+                return;
+
+            DirtyUI(uid, component);
+        }
+
         private void OnDeviceUpdated(EntityUid uid, PortableScrubberComponent component, ref AtmosDeviceUpdateEvent args)
         {
             var timeDelta = args.dt;
 
-            if (!component.Enabled)
+            //Theoretically no UI change here, we don't show powered, just if switched on.
+            if (!_power.IsPowered(uid))
+            {
+                DirtyUI(uid, component);
                 return;
+            }
 
             // If we are on top of a connector port, empty into it.
             if (_nodeContainer.TryGetNode(uid, component.PortName, out PortablePipeNode? portableNode)
@@ -114,21 +152,31 @@ namespace Content.Server.Atmos.Portable
             if (IsFull(component))
             {
                 UpdateAppearance(uid, true, false);
+                DirtyUI(uid, component);
                 return;
             }
 
             if (args.Grid is not {} grid)
+            {
+                DirtyUI(uid, component);
                 return;
+            }
 
             var position = _transformSystem.GetGridTilePositionOrDefault(uid);
             var environment = _atmosphereSystem.GetTileMixture(grid, args.Map, position, true);
 
-            var running = Scrub(timeDelta, component, environment);
+            GasTankComponent? gasTank = null;
+            var hasTank = (component.GasTankSlot?.HasItem ?? false) && _entManager.TryGetComponent<GasTankComponent>(component.GasTankSlot.Item!.Value, out gasTank);
+
+            var running = Scrub(timeDelta, component, (gasTank == null) ? environment : gasTank.Air);
 
             UpdateAppearance(uid, false, running);
             // We scrub once to see if we can and set the animation
-            if (!running)
+            if (!running || hasTank)
+            {
+                DirtyUI(uid, component);
                 return;
+            }
 
             // widenet
             var enumerator = _atmosphereSystem.GetAdjacentTileMixtures(grid, position, false, true);
@@ -136,6 +184,7 @@ namespace Content.Server.Atmos.Portable
             {
                 Scrub(timeDelta, component, adjacent);
             }
+            DirtyUI(uid, component);
         }
 
         /// <summary>
@@ -149,12 +198,13 @@ namespace Content.Server.Atmos.Portable
             portableNode.ConnectionsEnabled = (args.Anchored && _gasPortableSystem.FindGasPortIn(Transform(uid).GridUid, Transform(uid).Coordinates, out _));
 
             _appearance.SetData(uid, PortableScrubberVisuals.IsDraining, portableNode.ConnectionsEnabled);
+            DirtyUI(uid, component);
         }
 
         private void OnPowerChanged(EntityUid uid, PortableScrubberComponent component, ref PowerChangedEvent args)
         {
             UpdateAppearance(uid, IsFull(component), args.Powered);
-            component.Enabled = args.Powered;
+            DirtyUI(uid, component);
         }
 
         /// <summary>
@@ -167,6 +217,48 @@ namespace Content.Server.Atmos.Portable
                 var percentage = Math.Round(((component.Air.Pressure) / component.MaxPressure) * 100);
                 args.PushMarkup(Loc.GetString("portable-scrubber-fill-level", ("percent", percentage)));
             }
+        }
+
+        /// <summary>
+        /// Give the GUI its starting information.
+        /// </summary>
+        private void OnBeforeOpened(EntityUid uid, PortableScrubberComponent component, BeforeActivatableUIOpenEvent args)
+        {
+            DirtyUI(uid, component);
+        }
+
+        /// <summary>
+        /// Toggle the scrubber's power.
+        /// </summary>
+        private void OnToggle(EntityUid uid, PortableScrubberComponent component, PortableScrubberToggleMessage args)
+        {
+            ApcPowerReceiverComponent? powerReceiver = null;
+            if (!Resolve(uid, ref powerReceiver))
+                return;
+
+            _power.TogglePower(uid);
+
+            UpdateAppearance(uid, IsFull(component), _power.IsPowered(uid));
+            DirtyUI(uid, component);
+        }
+
+        private void OnFilterGasToggled(EntityUid uid, PortableScrubberComponent component, PortableScrubberFilterGasToggleMessage args)
+        {
+            if (!component.FilterGases.Contains(args.ToggledGas))
+                component.FilterGases.Add(args.ToggledGas);
+            else
+                component.FilterGases.Remove(args.ToggledGas);
+            DirtyUI(uid, component);
+        }
+
+        private void OnHoldingTankEjectMessage(EntityUid uid, PortableScrubberComponent component, PortableScrubberEjectTankMessage args)
+        {
+            if (!component.GasTankSlot.HasItem)
+                return;
+            var item = component.GasTankSlot.Item;
+            _slots.TryEjectToHands(uid, component.GasTankSlot, args.Actor, excludeUserAudio: true);
+
+            DirtyUI(uid, component);
         }
 
         /// <summary>
@@ -186,6 +278,30 @@ namespace Content.Server.Atmos.Portable
         private bool Scrub(float timeDelta, PortableScrubberComponent scrubber, GasMixture? tile)
         {
             return _scrubberSystem.Scrub(timeDelta, scrubber.TransferRate * _atmosphereSystem.PumpSpeedup(), ScrubberPumpDirection.Scrubbing, scrubber.FilterGases, tile, scrubber.Air);
+        }
+
+        private void DirtyUI(EntityUid uid, PortableScrubberComponent? component)
+        {
+            if (!Resolve(uid, ref component)
+                || !TryComp<ApcPowerReceiverComponent>(uid, out var powerReceiver)
+                || !_slots.TryGetSlot(uid, component.ContainerName, out var slot))
+            {
+                return;
+            }
+            var connected = _nodeContainer.TryGetNode(uid, component.PortName, out PortablePipeNode? portableNode)
+                            && portableNode.ConnectionsEnabled
+                            && portableNode.NodeGroup is PipeNet { NodeCount: > 1 };
+
+            string? tankLabel = null;
+            var tankPressure = 0f;
+
+            if ((slot?.HasItem ?? false) && _entManager.TryGetComponent<GasTankComponent>(slot.Item!.Value, out var gasTank))
+            {
+                tankLabel = Identity.Name(slot.Item.Value, _entManager);
+                tankPressure = gasTank.Air.Pressure;
+            }
+            _userInterfaceSystem.SetUiState(uid, PortableScrubberUiKey.Key,
+                new PortableScrubberBoundUserInterfaceStatusState(!powerReceiver.PowerDisabled, component.Air.Pressure, IsFull(component), connected, component.FilterGases, tankLabel, tankPressure));
         }
 
         private void UpdateAppearance(EntityUid uid, bool isFull, bool isRunning)

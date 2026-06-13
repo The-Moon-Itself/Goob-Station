@@ -1,0 +1,31 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'comp-portable-scrubber-ui-title'}">
+    <BoxContainer Name="VboxContainer" Orientation="Vertical" Margin="5 5 5 5" SeparationOverride="10">
+        <BoxContainer Name="StatusBox" Orientation="Vertical" Margin="2">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Text="{Loc comp-portable-scrubber-ui-status}"/>
+                <Button Text="{Loc comp-portable-scrubber-ui-status-disabled}" Access="Public" Name="ToggleStatusButton"/>
+            </BoxContainer>
+            <RichTextLabel Name="ScrubberPressureLabel" HorizontalExpand="True"/>
+            <RichTextLabel Name="ScrubberConnectedLabel" HorizontalExpand="True"/>
+        </BoxContainer>
+        <BoxContainer Name="TankBox" Orientation="Vertical" Margin="2">
+            <BoxContainer Name="NoTankBox">
+                <Label Text="{Loc comp-portable-scrubber-ui-no-tank}"/>
+            </BoxContainer>
+            <BoxContainer Name="ExistingTankBox" Orientation="Vertical" Visible="False">
+                <BoxContainer Orientation="Horizontal">
+                    <Label Text="{Loc comp-portable-scrubber-ui-tank-label}"/>
+                    <Label Name="TankNameLabel"/>
+                    <Button Text="{Loc comp-portable-scrubber-ui-tank-eject}" Access="Public" Name="TankEjectButton"/>
+                </BoxContainer>
+                <RichTextLabel Name="TankPressureLabel" HorizontalExpand="True"/>
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Name="FilterBox" Orientation="Vertical" Margin="2">
+            <Label Text="{Loc comp-portable-scrubber-ui-filters}"/>
+            <GridContainer Name="GasFiltersGrid" Columns="3"/>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>
