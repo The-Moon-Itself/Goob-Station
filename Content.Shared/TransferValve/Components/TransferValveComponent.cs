@@ -88,8 +88,8 @@ public sealed partial class TransferValveComponent : Component
 [Serializable, NetSerializable]
 public enum TransferValveVisuals : byte
 {
-    Valve = (1 << 0),
-    RightTank = (1 << 1),
-    LeftTank = (1 << 2),
-    Device = (1 << 3)
+    Valve,
+    RightTank,
+    LeftTank,
+    Device
 }
