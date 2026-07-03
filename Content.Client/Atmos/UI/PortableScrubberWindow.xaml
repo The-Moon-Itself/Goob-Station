@@ -16,8 +16,7 @@
             </BoxContainer>
             <BoxContainer Name="ExistingTankBox" Orientation="Vertical" Visible="False">
                 <BoxContainer Orientation="Horizontal">
-                    <Label Text="{Loc comp-portable-scrubber-ui-tank-label}"/>
-                    <Label Name="TankNameLabel"/>
+                    <Label Text="{Loc comp-portable-scrubber-ui-tank-label}" Name="TankNameLabel"/>
                     <Button Text="{Loc comp-portable-scrubber-ui-tank-eject}" Access="Public" Name="TankEjectButton"/>
                 </BoxContainer>
                 <RichTextLabel Name="TankPressureLabel" HorizontalExpand="True"/>

@@ -1,0 +1,34 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'comp-portable-pump-ui-title'}">
+    <BoxContainer Name="VboxContainer" Orientation="Vertical" Margin="5 5 5 5" SeparationOverride="10">
+        <BoxContainer Name="StatusBox" Orientation="Vertical" Margin="2">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Text="{Loc comp-portable-pump-ui-status}"/>
+                <Button Text="{Loc comp-portable-pump-ui-status-disabled}" Access="Public" Name="ToggleStatusButton"/>
+            </BoxContainer>
+            <RichTextLabel Name="PumpPressureLabel" HorizontalExpand="True"/>
+            <RichTextLabel Name="PumpConnectedLabel" HorizontalExpand="True"/>
+        </BoxContainer>
+        <BoxContainer Name="TankBox" Orientation="Vertical" Margin="2">
+            <BoxContainer Name="NoTankBox">
+                <Label Text="{Loc comp-portable-pump-ui-no-tank}"/>
+            </BoxContainer>
+            <BoxContainer Name="ExistingTankBox" Orientation="Vertical" Visible="False">
+                <BoxContainer Orientation="Horizontal">
+                    <Label Text="{Loc comp-portable-pump-ui-tank-label}" Name="TankNameLabel"/>
+                    <Button Text="{Loc comp-portable-pump-ui-tank-eject}" Access="Public" Name="TankEjectButton"/>
+                </BoxContainer>
+                <RichTextLabel Name="TankPressureLabel" HorizontalExpand="True"/>
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Name="PumpBox" Orientation="Vertical" Margin="2">
+            <Button Name="PumpDirectionButton" Access="Public"/>
+            <Label Text="{Loc comp-portable-pump-ui-pump-output-pressure}" />
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <FloatSpinBox HorizontalExpand="True" Name="PumpPressureOutputInput" MinSize="70 0" />
+                <Button Name="SetOutputPressureButton" Access="Public" Text="{Loc comp-portable-pump-ui-pump-set-pressure}"/>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>

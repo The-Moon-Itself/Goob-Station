@@ -8,7 +8,7 @@ comp-portable-scrubber-ui-connected = Port: [color=green]Connected[/color]
 comp-portable-scrubber-ui-disconnected = Port: [color=red]Not Connected[/color]
 
 comp-portable-scrubber-ui-no-tank = No holding tank
-comp-portable-scrubber-ui-tank-label = Tank label:
+comp-portable-scrubber-ui-tank-label = Tank label: {$label}
 comp-portable-scrubber-ui-tank-eject = Eject
 comp-portable-scrubber-ui-tank-pressure = Tank pressure: {$pressure} kPa
 

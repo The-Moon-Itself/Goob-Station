@@ -17,26 +17,26 @@ public sealed class TransferValveSystem : EntitySystem
         SubscribeLocalEvent<TransferValveComponent, AppearanceChangeEvent>(OnAppearanceChange);
     }
 
-    private void OnAppearanceChange(EntityUid uid, TransferValveComponent component, ref AppearanceChangeEvent args)
+    private void OnAppearanceChange(Entity<TransferValveComponent> ent, ref AppearanceChangeEvent args)
     {
         var sprite = args.Sprite;
         var appearance = args.Component;
         if (sprite == null || appearance == null)
             return;
-        var ttv = (uid, sprite);
+        var ttv = (ent.Owner, sprite);
 
-        var hasRightTank = UpdateTankLayerState(uid, sprite, appearance, TransferValveVisuals.RightTank, component.TankRsiState, component.DefaultRightState);
-        var hasLeftTank = UpdateTankLayerState(uid, sprite, appearance, TransferValveVisuals.LeftTank, component.TankRsiState, component.DefaultLeftState);
+        var hasRightTank = UpdateTankLayerState(ent, sprite, appearance, TransferValveVisuals.RightTank, ent.Comp.TankRsiState, ent.Comp.DefaultRightState);
+        var hasLeftTank = UpdateTankLayerState(ent, sprite, appearance, TransferValveVisuals.LeftTank, ent.Comp.TankRsiState, ent.Comp.DefaultLeftState);
 
         _sprite.LayerSetRsiState(ttv, TransferValveVisuals.Valve,
-                    (hasRightTank || hasLeftTank) ? component.AttachedState : component.EmptyState);
+                    (hasRightTank || hasLeftTank) ? ent.Comp.AttachedState : ent.Comp.EmptyState);
     }
 
-    private bool UpdateTankLayerState(EntityUid uid, SpriteComponent sprite, AppearanceComponent appearance, Enum layerKey, string tankState, string defaultState)
+    private bool UpdateTankLayerState(Entity<TransferValveComponent> ent, SpriteComponent sprite, AppearanceComponent appearance, Enum layerKey, string tankState, string defaultState)
     {
-        var ttv = (uid, sprite);
+        var ttv = (ent.Owner, sprite);
 
-        if (!_appearance.TryGetData<NetEntity>(uid, layerKey, out var tankNetEntity, appearance))
+        if (!_appearance.TryGetData<NetEntity>(ent, layerKey, out var tankNetEntity, appearance))
         {
             _sprite.LayerSetVisible(ttv, layerKey, false);
             return false;

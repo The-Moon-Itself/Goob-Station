@@ -10,11 +10,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Shared.Atmos;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Guidebook;
 
-namespace Content.Server.Atmos.Portable
+namespace Content.Shared.Atmos.Portable
 {
     [RegisterComponent]
     public sealed partial class PortableScrubberComponent : Component

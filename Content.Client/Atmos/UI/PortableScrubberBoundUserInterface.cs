@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
-using Content.Shared.Atmos.Piping.Portable.Components;
+using Content.Shared.Atmos.Portable.Components;
 using Content.Shared.Atmos;
 
 namespace Content.Client.Atmos.UI;
@@ -39,21 +38,21 @@ public sealed class PortableScrubberBoundUserInterface : BoundUserInterface
         if (_window == null)
             return;
 
-        SendMessage(new PortableScrubberEjectTankMessage());
+        SendPredictedMessage(new PortableScrubberEjectTankMessage());
     }
 
     private void OnFilterGasToggled(Gas toggledGas)
     {
         if (_window == null)
             return;
-        SendMessage(new PortableScrubberFilterGasToggleMessage(toggledGas));
+        SendPredictedMessage(new PortableScrubberFilterGasToggleMessage(toggledGas));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
         if (_window == null
-            || state is not PortableScrubberBoundUserInterfaceStatusState cast)
+            || state is not PortableScrubberBoundUserInterfaceState cast)
             return;
         _window.SetActive(cast.Enabled);
         _window.SetPressure(cast.Pressure, cast.IsFull);

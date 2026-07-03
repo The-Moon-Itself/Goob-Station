@@ -17,4 +17,5 @@ public enum PortableScrubberVisuals : byte
     IsFull,
     IsRunning,
     IsDraining,
+    HasTank
 }

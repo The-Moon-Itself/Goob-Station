@@ -1,6 +1,6 @@
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Atmos.Piping.Portable.Components;
+namespace Content.Shared.Atmos.Portable.Components;
 
 [Serializable]
 [NetSerializable]
@@ -43,7 +43,7 @@ public sealed class PortableScrubberEjectTankMessage : BoundUserInterfaceMessage
 
 [Serializable]
 [NetSerializable]
-public sealed class PortableScrubberBoundUserInterfaceStatusState : BoundUserInterfaceState
+public sealed class PortableScrubberBoundUserInterfaceState : BoundUserInterfaceState
 {
     public bool Enabled { get; }
     public float Pressure { get; }
@@ -53,7 +53,7 @@ public sealed class PortableScrubberBoundUserInterfaceStatusState : BoundUserInt
     public string? TankLabel;
     public float TankPressure;
 
-    public PortableScrubberBoundUserInterfaceStatusState(bool enabled, float pressure, bool isFull, bool connected, HashSet<Gas> filterGases, string? tankLabel, float tankPressure)
+    public PortableScrubberBoundUserInterfaceState(bool enabled, float pressure, bool isFull, bool connected, HashSet<Gas> filterGases, string? tankLabel, float tankPressure)
     {
         Enabled = enabled;
         Pressure = pressure;

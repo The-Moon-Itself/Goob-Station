@@ -5,7 +5,6 @@ using Content.Shared.Atmos.Prototypes;
 using Robust.Shared.Prototypes;
 using Content.Client.Message;
 using Content.Client.UserInterface.Controls;
-using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 
@@ -98,7 +97,7 @@ public sealed partial class PortableScrubberWindow : FancyWindow
         ExistingTankBox.Visible = hasTank;
         if (hasTank)
         {
-            TankNameLabel.Text = tankLabel;
+            TankNameLabel.Text = Loc.GetString("comp-portable-scrubber-ui-tank-label", ("label", tankLabel ?? " "));
             TankPressureLabel.SetMarkup(Loc.GetString("comp-portable-scrubber-ui-tank-pressure", ("pressure", Math.Round(pressure))));
         }
     }
