@@ -275,6 +275,7 @@
   recipeUnlocks:
   - HellfireFreezerMachineCircuitBoard
   - PortableScrubberMachineCircuitBoard
+  - PortablePumpMachineCircuitBoard
   - HolofanProjector
   technologyPrerequisites:
   - AtmosphericTech

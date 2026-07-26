@@ -150,6 +150,12 @@
 
 - type: latheRecipe
   parent: [ BaseCircuitboardRecipe, BaseEngineeringMachineRecipeCategory ]
+  id: PortablePumpMachineCircuitBoard
+  icon: { sprite: Structures/Piping/Atmospherics/Portable/portable_scrubber.rsi, state: icon } # Goobstation
+  result: PortablePumpMachineCircuitBoard
+
+- type: latheRecipe
+  parent: [ BaseCircuitboardRecipe, BaseEngineeringMachineRecipeCategory ]
   id: CondenserMachineCircuitBoard
   icon: { sprite: Structures/Piping/Atmospherics/condenser.rsi, state: off } # Goobstation
   result: CondenserMachineCircuitBoard

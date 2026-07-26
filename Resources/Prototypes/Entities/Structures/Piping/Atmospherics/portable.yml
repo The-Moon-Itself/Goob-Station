@@ -193,6 +193,8 @@
   - type: PortablePumpVisuals
     idleState: fan-idle
     runningState: fan-running
+  - type: Machine
+    board: PortablePumpMachineCircuitBoard
   - type: UserInterface
     interfaces:
       enum.PortablePumpUiKey.Key:
