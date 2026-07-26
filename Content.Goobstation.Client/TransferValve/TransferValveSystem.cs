@@ -1,8 +1,7 @@
+using Content.Goobstation.Shared.TransferValve.Components;
 using Robust.Client.GameObjects;
-using Content.Shared.Containers.ItemSlots;
-using Content.Shared.TransferValve.Components;
 
-namespace Content.Client.TransferValve;
+namespace Content.Goobstation.Client.TransferValve;
 
 public sealed class TransferValveSystem : EntitySystem
 {
