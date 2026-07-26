@@ -13,6 +13,7 @@
 
 using Content.Shared.Damage;
 using Content.Shared.Inventory;
+using Robust.Shared.Map;
 
 namespace Content.Shared.Explosion;
 
@@ -31,6 +32,27 @@ public record struct GetExplosionResistanceEvent(string ExplosionPrototype) : II
     public readonly string ExplosionPrototype = ExplosionPrototype;
 
     SlotFlags IInventoryRelayEvent.TargetSlots =>  ~SlotFlags.POCKET;
+}
+
+/// <summary>
+///     Raised as a broadcast whenever an explosion goes off. Broadcasted right before the explosion is made.
+/// </summary>
+[ByRefEvent]
+public record struct GlobalExplosionEvent(MapCoordinates Epicenter, float Intensity, float OrigIntensity)
+{
+    /// <summary>
+    /// The epicenter of the explosion
+    /// </summary>
+    public readonly MapCoordinates Epicenter = Epicenter;
+    /// <summary>
+    /// The intensity of the explosion before any cap
+    /// </summary>
+    public readonly float Intensity = Intensity;
+
+    /// <summary>
+    /// The intensity of the explosion after apply the maximum cap.
+    /// </summary>
+    public readonly float OrigIntensity = OrigIntensity;
 }
 
 /// <summary>

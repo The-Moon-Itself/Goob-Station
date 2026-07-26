@@ -516,6 +516,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         _audio.PlayGlobal(farSound, farFilter, true, farSound.Params);
 
+        var globExpEv = new GlobalExplosionEvent(pos, queued.MaxTileIntensity < queued.TotalIntensity ? queued.MaxTileIntensity : queued.TotalIntensity, queued.TotalIntensity);
+        RaiseLocalEvent(ref globExpEv);
+
         return new Explosion(this,
             queued.Proto,
             spaceData,
