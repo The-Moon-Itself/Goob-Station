@@ -2,6 +2,7 @@ using Content.Shared.Containers.ItemSlots;
 using Content.Shared.DeviceLinking;
 using Robust.Shared.Audio;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Goobstation.Shared.TransferValve.Components;
@@ -31,6 +32,16 @@ public sealed partial class TransferValveComponent : Component
     /// If the valve is open
     /// </summary>
     public bool ValveOpen = false;
+
+    /// <summary>
+    /// Time it takes to toggle the valve, gives atmos system time to process a potential gas tank rupture.
+    /// </summary>
+    public float Cooldown = 0.25f;
+
+    /// <summary>
+    /// When the valve can be opened again
+    /// </summary>
+    public TimeSpan NextToggle = TimeSpan.Zero;
 
     [DataField("togglePort", customTypeSerializer: typeof(PrototypeIdSerializer<SinkPortPrototype>))]
     public string TogglePort = "Toggle";

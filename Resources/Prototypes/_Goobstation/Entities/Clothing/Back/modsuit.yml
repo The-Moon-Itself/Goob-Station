@@ -414,6 +414,10 @@
   - type: Tag
     tags:
       - HighRiskItem
+  - type: DopplerArray
+    maxDistance: 21
+  - type: Speech
+    speechVerb: Robotic
 
 - type: entity
   parent: ClothingModsuitResearchDirector

@@ -9,6 +9,9 @@
     interfaces:
       enum.DopplerArrayUIKey.Key:
         type: DopplerArrayBoundUserInterface
+  - type: ActivatableUIRequiresPower
+  - type: Speech
+    speechVerb: Robotic
   - type: ActivatableUI
     key: enum.DopplerArrayUIKey.Key
   - type: Sprite

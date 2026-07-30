@@ -10,6 +10,7 @@ using Content.Shared.Examine;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
+using Robust.Shared.Timing;
 
 namespace Content.Goobstation.Server.TransferValve;
 
@@ -22,9 +23,7 @@ public sealed class TransferValveSystem : EntitySystem
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-
-    private const float ToggleDebounceDuration = 0.25f;
-    private static readonly Dictionary<EntityUid, float> DebouncedTimes = new();
+    [Dependency] private readonly IGameTiming _gameTiming = default!;
     private const string Tank1SlotId = "Tank1";
     private const string Tank2SlotId = "Tank2";
 
@@ -65,7 +64,6 @@ public sealed class TransferValveSystem : EntitySystem
     {
         _itemSlotsSystem.RemoveItemSlot(ent, ent.Comp.Tank1Slot);
         _itemSlotsSystem.RemoveItemSlot(ent, ent.Comp.Tank2Slot);
-        DebouncedTimes.Remove(ent);
     }
 
     private void OnItemAdded(Entity<TransferValveComponent> ent, ref EntInsertedIntoContainerMessage args)
@@ -237,46 +235,11 @@ public sealed class TransferValveSystem : EntitySystem
 
     public void OnSignalReceived(Entity<TransferValveComponent> ent, ref SignalReceivedEvent args)
     {
-        if (args.Port == ent.Comp.TogglePort && ent.Comp.ToggleDebounce)
+        if (args.Port == ent.Comp.TogglePort && ent.Comp.NextToggle < _gameTiming.CurTime)
         {
-            ent.Comp.ToggleDebounce = false;
+            ent.Comp.NextToggle = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.Cooldown);
             ToggleValve(ent);
-            DebouncedTimes[ent] = ToggleDebounceDuration;
             return;
-        }
-    }
-
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
-        if (DebouncedTimes.Count == 0)
-            return;
-
-        var toRemove = new List<EntityUid>();
-
-        foreach (var kvp in DebouncedTimes)
-        {
-            var uid = kvp.Key;
-            var timeLeft = kvp.Value - frameTime;
-
-            if (timeLeft <= 0f)
-            {
-                if (_entManager.TryGetComponent<TransferValveComponent>(uid, out var comp))
-                {
-                    comp.ToggleDebounce = true;
-                }
-
-                toRemove.Add(uid);
-            }
-            else
-            {
-                DebouncedTimes[uid] = timeLeft;
-            }
-        }
-
-        foreach (var uid in toRemove)
-        {
-            DebouncedTimes.Remove(uid);
         }
     }
 }

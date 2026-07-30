@@ -1,6 +1,7 @@
 
 using Robust.Shared.Map;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Goobstation.Shared.DopplerArray;
 
@@ -13,42 +14,29 @@ public sealed partial record TachyonRecord
     /// <summary>
     /// The name of the log recording
     /// </summary>
-    [DataField]
     public string Name = "Log Recording";
 
 
     /// <summary>
     /// When the explosion occured
     /// </summary>
-    [DataField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan Timestamp;
 
 
     /// <summary>
     /// The location of the epicenter of the explosion
     /// </summary>
-    [DataField]
     public MapCoordinates Coordinates;
 
 
     /// <summary>
     /// The radius of the explosion after the intensity was capped
     /// </summary>
-    [DataField]
     public float FactualRadius = 0;
 
     /// <summary>
     /// The radius of the explosion before the intensity was capped
     /// </summary>
-    [DataField]
     public float TheoreticalRadius = 0;
-
-    public TachyonRecord(string name, TimeSpan timestamp, MapCoordinates coordinates, float factualRadius, float theoreticalRadius)
-    {
-        Name = name;
-        Timestamp = timestamp;
-        Coordinates = coordinates;
-        FactualRadius = factualRadius;
-        TheoreticalRadius = theoreticalRadius;
-    }
 }

@@ -4,7 +4,8 @@
                Title="{Loc 'doppler-array-window-title'}"
                MinSize="660 400">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="5">
-        <Label Name="NoRecords" Text="{Loc 'doppler-array-no-records'}" HorizontalExpand="True" HorizontalAlignment="Center"/>
+        <Button Name="DeleteButton" Text="{Loc 'doppler-array-ui-delete-entry'}" Disabled="True"/>
+        <Label Name="NoRecords" Text="{Loc 'doppler-array-ui-no-records'}" HorizontalExpand="True" HorizontalAlignment="Center"/>
         <ScrollContainer VerticalExpand="True">
             <ItemList Name="RecordContainer"/> <!-- Populated when window opened -->
         </ScrollContainer>
