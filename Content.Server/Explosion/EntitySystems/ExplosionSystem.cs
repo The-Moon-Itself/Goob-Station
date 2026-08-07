@@ -279,7 +279,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     }
 
     /// <inheritdoc/>
-    public override void TriggerExplosive(EntityUid uid, ExplosiveComponent? explosive = null, bool delete = true, float? totalIntensity = null, float? radius = null, EntityUid? user = null)
+    public override void TriggerExplosive(EntityUid uid, ExplosiveComponent? explosive = null, bool delete = true, float? totalIntensity = null, float? radius = null, EntityUid? user = null, float? cappedIntensity = null, float? cappedRadius = null)
     {
         // log missing: false, because some entities (e.g. liquid tanks) attempt to trigger explosions when damaged,
         // but may not actually be explosive.
@@ -297,6 +297,10 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             totalIntensity ??= RadiusToIntensity((float)radius, explosive.IntensitySlope, explosive.MaxIntensity);
         totalIntensity ??= explosive.TotalIntensity;
 
+        // Same as above with capped radius and intensity.
+        if (cappedRadius != null)
+            cappedIntensity ??= RadiusToIntensity((float) cappedRadius, explosive.IntensitySlope, explosive.MaxIntensity);
+
         QueueExplosion(uid,
             explosive.ExplosionType,
             (float)totalIntensity,
@@ -305,7 +309,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             explosive.TileBreakScale,
             explosive.MaxTileBreak,
             explosive.CanCreateVacuum,
-            user);
+            user,
+            true,
+            cappedIntensity);
 
         if (explosive.DeleteAfterExplosion ?? delete)
             QueueDel(uid);
@@ -375,7 +381,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         int maxTileBreak = int.MaxValue,
         bool canCreateVacuum = true,
         EntityUid? user = null,
-        bool addLog = true)
+        bool addLog = true,
+        float? cappedIntensity = null)
     {
         var pos = Transform(uid);
 
@@ -383,7 +390,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         var posFound = _transformSystem.TryGetMapOrGridCoordinates(uid, out var gridPos, pos);
 
-        QueueExplosion(mapPos, typeId, totalIntensity, slope, maxTileIntensity, uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false);
+        QueueExplosion(mapPos, typeId, totalIntensity, slope, maxTileIntensity, uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false, cappedIntensity);
 
         if (!addLog)
             return;
@@ -391,7 +398,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         if (user == null)
         {
             _adminLogger.Add(LogType.Explosion, LogImpact.High,
-                $"{ToPrettyString(uid):entity} exploded ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {totalIntensity} slope {slope}");
+                $"{ToPrettyString(uid):entity} exploded ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
         }
         else
         {
@@ -400,7 +407,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
                 ? LogImpact.Extreme
                 : LogImpact.High;
             _adminLogger.Add(LogType.Explosion, logImpact,
-                $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {totalIntensity} slope {slope}");
+                $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
         }
     }
 
@@ -416,7 +423,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         float tileBreakScale = 1f,
         int maxTileBreak = int.MaxValue,
         bool canCreateVacuum = true,
-        bool addLog = true)
+        bool addLog = true,
+        float? cappedIntensity = null)
     {
         if (totalIntensity <= 0 || slope <= 0)
             return;
@@ -428,7 +436,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         }
 
         if (addLog) // dont log if already created a separate, more detailed, log.
-            _adminLogger.Add(LogType.Explosion, LogImpact.High, $"Explosion ({typeId}) spawned at {epicenter:coordinates} with intensity {totalIntensity} slope {slope}");
+            _adminLogger.Add(LogType.Explosion, LogImpact.High, $"Explosion ({typeId}) spawned at {epicenter:coordinates} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
 
         // try to combine explosions on the same tile if they are the same type
         foreach (var queued in _queuedExplosions)
@@ -443,6 +451,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
                 continue;
 
             // they are close enough to combine so just add total intensity and prevent queuing another one
+            //
+            if ((queued.CappedIntensity ?? cappedIntensity) != null)
+                queued.CappedIntensity = queued.CappedIntensity ?? queued.TotalIntensity + cappedIntensity ?? totalIntensity;
             queued.TotalIntensity += totalIntensity;
             return;
         }
@@ -454,6 +465,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             Slope = slope,
             MaxTileIntensity = maxTileIntensity,
             TileBreakScale = tileBreakScale,
+            CappedIntensity = cappedIntensity,
             MaxTileBreak = maxTileBreak,
             CanCreateVacuum = canCreateVacuum,
             Cause = cause
@@ -473,7 +485,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         if (!_mapSystem.MapExists(pos.MapId))
             return null;
 
-        var results = GetExplosionTiles(pos, queued.Proto.ID, queued.TotalIntensity, queued.Slope, queued.MaxTileIntensity);
+        var results = GetExplosionTiles(pos, queued.Proto.ID, MathF.Min(queued.TotalIntensity, queued.CappedIntensity ?? queued.TotalIntensity), queued.Slope, queued.MaxTileIntensity);
 
         if (results == null)
             return null;
@@ -516,7 +528,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         _audio.PlayGlobal(farSound, farFilter, true, farSound.Params);
 
-        var globExpEv = new GlobalExplosionEvent(pos, queued.MaxTileIntensity < queued.TotalIntensity ? queued.MaxTileIntensity : queued.TotalIntensity, queued.TotalIntensity);
+        var globExpEv = new GlobalExplosionEvent(pos, MathF.Min(queued.TotalIntensity, queued.CappedIntensity ?? queued.TotalIntensity), queued.TotalIntensity, queued.Slope, queued.MaxTileIntensity);
         RaiseLocalEvent(ref globExpEv);
 
         return new Explosion(this,

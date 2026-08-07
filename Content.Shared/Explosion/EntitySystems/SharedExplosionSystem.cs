@@ -107,9 +107,9 @@ public abstract class SharedExplosionSystem : EntitySystem
     /// <remarks>
     ///     Also accepts radius or intensity arguments. This is useful for explosives where the intensity is not
     ///     specified in the yaml / by the component, but determined dynamically (e.g., by the quantity of a
-    ///     solution in a reaction).
+    ///     solution in a reaction). Can be supplied a capped intensity or radius as well to limit dynamically determined explosions.
     /// </remarks>
-    public virtual void TriggerExplosive(EntityUid uid, ExplosiveComponent? explosive = null, bool delete = true, float? totalIntensity = null, float? radius = null, EntityUid? user = null)
+    public virtual void TriggerExplosive(EntityUid uid, ExplosiveComponent? explosive = null, bool delete = true, float? totalIntensity = null, float? radius = null, EntityUid? user = null, float? cappedIntensity = null, float? cappedRadius = null)
     {
     }
 }

@@ -1087,6 +1087,8 @@ public sealed class QueuedExplosion(ExplosionPrototype proto)
     public MapCoordinates Epicenter;
     public ExplosionPrototype Proto = proto;
     public float TotalIntensity, Slope, MaxTileIntensity, TileBreakScale;
+
+    public float? CappedIntensity = null;
     public int MaxTileBreak;
     public bool CanCreateVacuum;
     public EntityUid? Cause; // The entity that exploded, for logging purposes.

@@ -49,6 +49,11 @@ public sealed partial class ResearchServerComponent : Component
     public int Points;
 
     /// <summary>
+    /// The total points earned by the server from different sources.
+    /// </summary>
+    public Dictionary<ResearchServerPointSources, int> PointsBySource = new();
+
+    /// <summary>
     /// A unique numeric id representing the server
     /// </summary>
     [AutoNetworkedField]
@@ -87,3 +92,11 @@ public readonly record struct ResearchServerPointsChangedEvent(EntityUid Server,
 /// <param name="Points"></param>
 [ByRefEvent]
 public record struct ResearchServerGetPointsPerSecondEvent(EntityUid Server, int Points);
+
+/// <summary>
+/// Different sources of research points that one might want to track, such as to limit the amount of points granted from one method.
+/// </summary>
+public enum ResearchServerPointSources : byte
+{
+    Toxins
+}

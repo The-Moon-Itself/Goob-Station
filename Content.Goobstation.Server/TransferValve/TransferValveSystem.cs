@@ -7,6 +7,7 @@ using Content.Shared.Atmos.Components;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Examine;
+using Content.Shared.Explosion;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;

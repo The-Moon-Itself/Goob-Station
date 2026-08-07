@@ -165,7 +165,7 @@ public sealed partial class ResearchSystem
     /// <param name="uid">The server</param>
     /// <param name="points">The amount of points being added</param>
     /// <param name="component"></param>
-    public void ModifyServerPoints(EntityUid uid, int points, ResearchServerComponent? component = null)
+    public void ModifyServerPoints(EntityUid uid, int points, ResearchServerComponent? component = null, ResearchServerPointSources? pointSource = null)
     {
         if (points == 0)
             return;
@@ -173,11 +173,21 @@ public sealed partial class ResearchSystem
         if (!Resolve(uid, ref component))
             return;
         component.Points += points;
+        if (pointSource != null)
+            component.PointsBySource[pointSource.Value] = points + (component.PointsBySource.TryGetValue(pointSource.Value, out var oldPoints) ? oldPoints : 0);
         var ev = new ResearchServerPointsChangedEvent(uid, component.Points, points);
         foreach (var client in component.Clients)
         {
             RaiseLocalEvent(client, ref ev);
         }
         Dirty(uid, component);
+    }
+
+    public int GetServerPointsByType(EntityUid uid, ResearchServerPointSources pointSource, ResearchServerComponent? component = null)
+    {
+        if (!Resolve(uid, ref component))
+            return 0;
+
+        return component.PointsBySource.TryGetValue(pointSource, out var points) ? points : 0;
     }
 }
