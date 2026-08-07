@@ -18,6 +18,8 @@ public sealed partial class PortablePumpWindow : FancyWindow
     public bool Active;
     private bool _hasTank;
     private bool _connected;
+
+    private float _outputPressure = 0f;
     private string _directionFormatString;
     public float MaxPressure
     {
@@ -46,6 +48,7 @@ public sealed partial class PortablePumpWindow : FancyWindow
             PumpOutputPressureChanged?.Invoke(PumpPressureOutputInput.Value);
             SetOutputPressureButton.Disabled = false;
         };
+        _outputPressure = PumpPressureOutputInput.Value;
         UpdatePumpDirectionButton();
     }
 
@@ -90,6 +93,9 @@ public sealed partial class PortablePumpWindow : FancyWindow
 
     public void SetTargetPressure(float targetPressure)
     {
+        if (targetPressure.Equals(_outputPressure))
+            return;
+        _outputPressure = targetPressure;
         PumpPressureOutputInput.Value = targetPressure;
     }
 

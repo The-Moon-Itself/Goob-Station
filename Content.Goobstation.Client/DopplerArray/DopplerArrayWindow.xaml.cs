@@ -44,15 +44,16 @@ public sealed partial class DopplerArrayWindow : FancyWindow
         NoRecords.Visible = state.Records.Count == 0;
         foreach (TachyonRecord entry in state.Records)
         {
-            var line = Loc.GetString("doppler-array-ui-record-epicenter", ("x", MathF.Round(entry.Coordinates.X)), ("y", MathF.Round(entry.Coordinates.Y)));
+            var line = Loc.GetString("doppler-array-ui-record-timestamp", ("time", entry.Timestamp.ToString()));
+            line = Loc.GetString("doppler-array-ui-record-epicenter", ("x", MathF.Round(entry.Coordinates.X)), ("y", MathF.Round(entry.Coordinates.Y)));
             if (entry.TheoreticalRadius > entry.FactualRadius)
             {
-                line += " " + Loc.GetString("doppler-array-ui-record-factual-radius", ("factual_radius", entry.FactualRadius));
-                line += " " + Loc.GetString("doppler-array-ui-record-theoretical-radius", ("theoretical_radius", entry.TheoreticalRadius));
+                line += " " + Loc.GetString("doppler-array-ui-record-factual-radius", ("factual_radius", MathF.Round(entry.FactualRadius)));
+                line += " " + Loc.GetString("doppler-array-ui-record-theoretical-radius", ("theoretical_radius", MathF.Round(entry.TheoreticalRadius)));
             }
             else
             {
-                line += " " + Loc.GetString("doppler-array-ui-record-radius", ("radius", entry.FactualRadius));
+                line += " " + Loc.GetString("doppler-array-ui-record-radius", ("radius", MathF.Round(entry.FactualRadius)));
             }
             RecordContainer.AddItem(line);
         }
