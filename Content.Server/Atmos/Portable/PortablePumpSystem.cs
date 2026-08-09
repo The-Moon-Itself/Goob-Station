@@ -50,20 +50,20 @@ public sealed class PortablePumpSystem : SharedPortablePumpSystem
 
     private void OnDeviceUpdated(Entity<PortablePumpComponent> ent, ref AtmosDeviceUpdateEvent args)
     {
-        var powered = _power.IsPowered(ent);
-        Appearance.SetData(ent, PortablePumpVisuals.IsRunning, powered);
-        if (!powered)
-        {
-            DirtyUI(ent);
-            return;
-        }
-
         if (_nodeContainer.TryGetNode(ent.Owner, ent.Comp.PortName, out PortablePipeNode? portableNode)
             && portableNode.ConnectionsEnabled)
         {
             _atmosphereSystem.React(ent.Comp.Air, portableNode);
             if (portableNode.NodeGroup is PipeNet { NodeCount: > 1 } net)
                 _canisterSystem.MixContainerWithPipeNet(ent.Comp.Air, net.Air);
+        }
+
+        var powered = _power.IsPowered(ent);
+        Appearance.SetData(ent, PortablePumpVisuals.IsRunning, powered);
+        if (!powered)
+        {
+            DirtyUI(ent);
+            return;
         }
 
         if (args.Grid is not { } grid)

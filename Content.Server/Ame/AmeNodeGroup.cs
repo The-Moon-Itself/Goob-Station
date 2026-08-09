@@ -185,7 +185,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
         // Balanced around a single core AME with injection level 2 producing 120KW.
         // Two core with four injection is 150kW. Two core with two injection is 90kW.
 
-        // Increasing core count creates diminishing returns, increasing injection amount increases 
+        // Increasing core count creates diminishing returns, increasing injection amount increases
         // Unlike the previous solution, increasing fuel and cores always leads to an increase in power, even if by very small amounts.
         // Increasing core count without increasing fuel always leads to reduced power as well.
         // At 18+ cores and 2 inject, the power produced is less than 0, the Max ensures the AME can never produce "negative" power.
@@ -220,7 +220,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
             * todo: add an exact to the shielding and make this find the core closest to the controller
             * so they chain explode, after helpers have been added to make it not cancer
         */
-        var radius = Math.Min(2 * CoreCount * controller.InjectionAmount, 8f);
-        _entMan.System<ExplosionSystem>().TriggerExplosive(MasterController.Value, radius: radius, delete: false);
+        var radius = 2 * CoreCount * controller.InjectionAmount;
+        _entMan.System<ExplosionSystem>().TriggerExplosive(MasterController.Value, radius: radius, delete: false, cappedRadius: 8f);
     }
 }
