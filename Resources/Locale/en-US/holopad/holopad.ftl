@@ -82,6 +82,7 @@ holopad-science-anomaly = Science - Anomaly
 holopad-science-artifact = Science - Artifact
 holopad-science-artifact-north = Science - Artifact North
 holopad-science-artifact-south = Science - Artifact South
+holopad-science-toxins = Science - Toxins
 holopad-science-robotics = Science - Robotics
 holopad-science-rnd = Science - R&D
 holopad-science-front = Science - Front

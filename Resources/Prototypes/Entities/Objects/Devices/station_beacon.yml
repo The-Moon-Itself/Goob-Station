@@ -472,6 +472,22 @@
 
 - type: entity
   parent: DefaultStationBeaconScience
+  id: DefaultStationBeaconToxinsLab
+  suffix: Toxins Lab
+  components:
+  - type: NavMapBeacon
+    defaultText: station-beacon-toxins-lab
+
+- type: entity
+  parent: DefaultStationBeaconScience
+  id: DefaultStationBeaconToxinsTestSat
+  suffix: Toxins Test Satellite
+  components:
+  - type: NavMapBeacon
+    defaultText: Toxins Testing Satellite
+
+- type: entity
+  parent: DefaultStationBeaconScience
   id: DefaultStationBeaconCybersunRD
   suffix: Cybersun R&D
   components:

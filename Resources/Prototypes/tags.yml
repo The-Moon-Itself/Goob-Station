@@ -1630,6 +1630,9 @@
   id: SurveillanceCameraMonitorCircuitboard
 
 - type: Tag
+  id: SurveillanceWirelessCameraMonitorCircuitboard
+
+- type: Tag
   id: Syndicate
 
 - type: Tag

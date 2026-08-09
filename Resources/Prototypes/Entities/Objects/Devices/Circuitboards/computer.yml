@@ -355,6 +355,9 @@
     state: cpu_service
   - type: ComputerBoard
     prototype: ComputerSurveillanceWirelessCameraMonitor
+  - type: Tag
+    tags:
+      - SurveillanceWirelessCameraMonitorCircuitboard
 
 - type: entity
   parent: BaseComputerCircuitboard

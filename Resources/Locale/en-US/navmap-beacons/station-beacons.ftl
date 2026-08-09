@@ -51,6 +51,8 @@ station-beacon-research-director = RD
 station-beacon-robotics = Robotics
 station-beacon-artifact-lab = Artifact
 station-beacon-anomaly-gen = Anomaly
+station-beacon-toxins-lab = Toxins
+station-beacon-toxins-test-sat = Toxins Testing Satellite
 
 station-beacon-supply = Supply
 station-beacon-cargo = Cargo

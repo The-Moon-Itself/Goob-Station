@@ -68,6 +68,16 @@
   canBuildInImpassable: true
 
 - type: construction
+  id: WallmountWirelessTelescreen
+  graph: WallmountTelescreen
+  startNode: start
+  targetNode: WirelessTelescreen
+  category: construction-category-utilities
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+- type: construction
   id: StationMap
   graph: StationMap
   startNode: start

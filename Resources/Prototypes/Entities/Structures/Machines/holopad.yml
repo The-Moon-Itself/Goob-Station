@@ -391,6 +391,14 @@
 
 - type: entity
   parent: Holopad
+  id: HolopadScienceToxins
+  suffix: Toxins
+  components:
+  - type: Label
+    currentLabel: holopad-science-toxins
+
+- type: entity
+  parent: Holopad
   id: HolopadScienceRobotics
   suffix: Robotics
   components:
