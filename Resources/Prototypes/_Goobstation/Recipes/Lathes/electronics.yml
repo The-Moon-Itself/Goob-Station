@@ -183,3 +183,11 @@
   id: CameraElectronics
   icon: { sprite: Structures/Wallmounts/camera.rsi, state: cameracase }
   result: CameraElectronics
+
+- type: latheRecipe
+  parent: [ BaseElectronicsRecipe, BaseCircuitryRecipeCategory ]
+  id: MassDriverCircuitBoard
+  icon:
+    sprite: _Goobstation/Structures/Machines/mass_driver.rsi
+    state: icon
+  result: MassDriverCircuitBoard

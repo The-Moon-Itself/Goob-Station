@@ -172,6 +172,7 @@
   - ConstructorCircuitboard
   - StorageBinCircuitboard
   - InteractorCircuitboard
+  - MassDriverCircuitBoard
   # End Goobstation Additions
   - SheetifierMachineCircuitboard
   # Goobstation R&D Console rework start

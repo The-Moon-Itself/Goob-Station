@@ -1,0 +1,44 @@
+- type: entity
+  parent: [BaseMachinePowered, ConstructibleMachine]
+  id: MassDriver
+  name: mass driver
+  description: The finest oversized pinball bumper you could ask for.
+  components:
+  - type: Sprite
+    drawdepth: HighFloorObjects
+    sprite: _Goobstation/Structures/Machines/mass_driver.rsi
+    layers:
+    - state: icon
+      map: [ "enum.MassDriverVisualLayers.Base" ]
+  - type: Appearance
+  - type: Battery
+    startingCharge: 0
+    maxCharge: 6000
+  - type: ExaminableBattery
+  - type: ApcPowerReceiverBattery
+    idleLoad: 10
+    batteryRechargeRate: 200
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 10
+  - type: Transform
+    noRot: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        mask:
+        - Impassable
+  - type: Rotatable
+  - type: MassDriver
+  - type: MassDriverVisuals
+    idleState: icon
+    activeState: firing
+  - type: AnimationPlayer
+  - type: DeviceLinkSink
+    ports:
+      - MassDriverLaunch
+  - type: Machine
+    board: MassDriverCircuitBoard

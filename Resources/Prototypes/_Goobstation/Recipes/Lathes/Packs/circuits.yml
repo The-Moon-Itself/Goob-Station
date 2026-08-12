@@ -37,6 +37,7 @@
   - InteractorCircuitboard
   - PlumbingPumpCircuitboard
   - TelecomTransmitterCircuitboard
+  - MassDriverCircuitBoard
 
 - type: latheRecipePack
   id: ServiceBoardsGoob

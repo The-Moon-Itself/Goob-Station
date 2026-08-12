@@ -149,3 +149,9 @@
   id: StationRadioRigPort
   name: signal-port-name-radio-rig
   description: signal-port-description-radio-rig
+
+# Mass Driver
+- type: sinkPort
+  id: MassDriverLaunch
+  name: signal-port-name-mass-driver-launch
+  description: signal-port-description-mass-driver-launch

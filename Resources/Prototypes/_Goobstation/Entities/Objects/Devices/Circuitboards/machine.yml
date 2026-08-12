@@ -181,3 +181,18 @@
       GlassBeaker:
         amount: 2
         defaultPrototype: Beaker
+
+- type: entity  # Mass Driver
+  parent: BaseMachineCircuitboard
+  id: MassDriverCircuitBoard
+  name: mass driver machine board
+  description: A machine printed circuit board for a mass driver.
+  components:
+  - type: Sprite
+    state: engineering
+  - type: MachineBoard
+    prototype: MassDriver
+    stackRequirements:
+      Manipulator: 4
+      Cable: 2
+      Steel: 2
