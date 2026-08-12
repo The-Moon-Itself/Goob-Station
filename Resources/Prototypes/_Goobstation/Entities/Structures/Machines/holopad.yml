@@ -28,3 +28,11 @@
   components:
   - type: Label
     currentLabel: holopad-centcomm
+
+- type: entity
+  parent: Holopad
+  id: HolopadScienceToxins
+  suffix: Toxins
+  components:
+  - type: Label
+    currentLabel: holopad-science-toxins

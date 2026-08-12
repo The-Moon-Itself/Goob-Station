@@ -7,3 +7,7 @@
 station-beacon-centcomm-office = Centcomm Office
 
 station-beacon-radio-station = Radio Station
+
+station-beacon-toxins-lab = Toxins
+station-beacon-toxins-launch = Toxins Launch
+station-beacon-toxins-test-sat = Toxins Testing Satellite

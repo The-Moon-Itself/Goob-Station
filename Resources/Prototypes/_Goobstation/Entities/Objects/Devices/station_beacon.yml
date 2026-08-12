@@ -20,3 +20,27 @@
   - type: NavMapBeacon
     defaultText: station-beacon-radio-station
     color: "#30a314"
+
+- type: entity
+  parent: DefaultStationBeaconScience
+  id: DefaultStationBeaconToxinsLab
+  suffix: Toxins Lab
+  components:
+  - type: NavMapBeacon
+    defaultText: station-beacon-toxins-lab
+
+- type: entity
+  parent: DefaultStationBeaconScience
+  id: DefaultStationBeaconToxinsLaunch
+  suffix: Toxins Launch
+  components:
+  - type: NavMapBeacon
+    defaultText: station-beacon-toxins-lab
+
+- type: entity
+  parent: DefaultStationBeaconScience
+  id: DefaultStationBeaconToxinsTestSat
+  suffix: Toxins Test Satellite
+  components:
+  - type: NavMapBeacon
+    defaultText: station-beacon-toxins-test-sat
