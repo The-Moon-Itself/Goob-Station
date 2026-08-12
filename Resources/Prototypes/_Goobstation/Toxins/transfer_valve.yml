@@ -29,7 +29,7 @@
     sprite: _Goobstation/Objects/Weapons/Bombs/Transfervalve.rsi
     layers:
     - state: valve_1
-    size: Huge
+    size: Ginormous
   - type: TransferValve
     tank1Slot:
       whitelist:
