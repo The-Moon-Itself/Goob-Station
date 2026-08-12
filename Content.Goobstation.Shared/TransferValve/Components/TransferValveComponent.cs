@@ -34,8 +34,9 @@ public sealed partial class TransferValveComponent : Component
     public bool ValveOpen = false;
 
     /// <summary>
-    /// Time it takes to toggle the valve, gives atmos system time to process a potential gas tank rupture.
+    /// Time it takes in seconds to toggle the valve, gives atmos system time to process a potential gas tank rupture.
     /// </summary>
+    [DataField]
     public float Cooldown = 0.25f;
 
     /// <summary>

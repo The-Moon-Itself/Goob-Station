@@ -4,7 +4,7 @@ using Content.Shared.Atmos.Visuals;
 namespace Content.Client.Atmos.Visualizers;
 
 /// <summary>
-/// Controls client-side visuals for portable scrubbers.
+/// Controls client-side visuals for portable pumps.
 /// </summary>
 public sealed class PortablePumpSystem : VisualizerSystem<PortablePumpVisualsComponent>
 {
