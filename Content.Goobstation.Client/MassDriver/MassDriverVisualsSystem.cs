@@ -5,7 +5,7 @@ using Robust.Client.GameObjects;
 
 namespace Content.Goobstation.Client.MassDriver;
 
-public sealed class PortablePumpSystem : VisualizerSystem<MassDriverVisualsComponent>
+public sealed class MassDriverVisualizerSystem : VisualizerSystem<MassDriverVisualsComponent>
 {
     [Dependency] private readonly AnimationPlayerSystem _animation = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
