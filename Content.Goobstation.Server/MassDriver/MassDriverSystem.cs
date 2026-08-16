@@ -1,11 +1,11 @@
 
 using Content.Server.DeviceLinking.Systems;
-using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._White.Grab;
 using Content.Shared.DeviceLinking;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Power.Components;
 using Content.Goobstation.Shared.MassDriver;
 using Content.Shared.Popups;
 using Content.Shared.Throwing;
@@ -56,7 +56,10 @@ public sealed class MassDriverSystem : EntitySystem
     {
         if (ent.Comp.ReadyWhen > _gameTiming.CurTime)
             return;
-        if (!_entManager.TryGetComponent<BatteryComponent>(ent, out var battery) || battery.CurrentCharge < ent.Comp.PowerPerObject)
+        if (!_entManager.TryGetComponent<BatteryComponent>(ent, out var batteryComp))
+            return;
+        var battery = (ent, batteryComp);
+        if (_battery.GetCharge(battery) < ent.Comp.PowerPerObject)
             return;
 
         // Play animation
@@ -74,7 +77,7 @@ public sealed class MassDriverSystem : EntitySystem
         {
             if (!TryComp<PhysicsComponent>(obj, out var physics))
                 continue;
-            if (itemsThrown >= ent.Comp.ObjectLimit || !_battery.TryUseCharge(ent, ent.Comp.PowerPerObject))
+            if (itemsThrown >= ent.Comp.ObjectLimit || !_battery.TryUseCharge(battery, ent.Comp.PowerPerObject))
             {
                 _popup.PopupEntity(Loc.GetString("mass-driver-jammed", ("driver", Identity.Name(ent, _entManager))), ent);
                 break;

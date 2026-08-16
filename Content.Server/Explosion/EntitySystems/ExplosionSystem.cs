@@ -284,9 +284,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
                 ? LogImpact.Extreme
                 : LogImpact.High;
             if (posFound)
-                _adminLogger.Add(LogType.Explosion, logImpact, $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{gridPos:coordinates} with intensity {totalIntensity} slope {slope}");
+                _adminLogger.Add(LogType.Explosion, logImpact, $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{gridPos:coordinates} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
             else
-                _adminLogger.Add(LogType.Explosion, logImpact, $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:[Grid or Map not found] with intensity {totalIntensity} slope {slope}");
+                _adminLogger.Add(LogType.Explosion, logImpact, $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:[Grid or Map not found] with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
         }
     }
 

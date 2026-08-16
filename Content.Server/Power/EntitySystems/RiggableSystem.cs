@@ -66,9 +66,7 @@ public sealed class RiggableSystem : EntitySystem
 
     public void Explode(EntityUid uid, float charge, EntityUid? cause = null)
     {
-        var radius = MathF.Min(5, MathF.Sqrt(charge) / 9);
-
-        var radius = MathF.Sqrt(battery.CurrentCharge) / 9;
+        var radius = MathF.Sqrt(charge) / 9;
 
         _explosionSystem.TriggerExplosive(uid, radius: radius, user:cause, cappedRadius: 5);
         QueueDel(uid);

@@ -114,6 +114,8 @@ public sealed class BlastWaveSystem : EntitySystem
                         ent.Comp.ProcessedEntities,
                         ent.Comp.ExplosionProto.ID,
                         ent.Comp.ExplosionProto.FireStacks,
+                        ent.Comp.ExplosionProto.Temperature,
+                        intensity,
                         ent.Comp.Cause);
                     if (canDamageFloor)
                         _explosion.DamageFloorTile(curTile, intensity * ent.Comp.TileBreakScale, ent.Comp.MaxTileBreak, !ent.Comp.HugBox, fromGridTiles, ent.Comp.ExplosionProto);
@@ -173,6 +175,8 @@ public sealed class BlastWaveSystem : EntitySystem
                         ent.Comp.ProcessedEntities,
                         ent.Comp.ExplosionProto.ID,
                         ent.Comp.ExplosionProto.FireStacks,
+                        ent.Comp.ExplosionProto.Temperature,
+                        intensity,
                         ent.Comp.Cause);
                     if (canDamageFloor)
                         _explosion.DamageFloorTile(curTile, intensity * ent.Comp.TileBreakScale, ent.Comp.MaxTileBreak, !ent.Comp.HugBox, toGridTiles, ent.Comp.ExplosionProto);

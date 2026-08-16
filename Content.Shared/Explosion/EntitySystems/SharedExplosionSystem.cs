@@ -68,7 +68,8 @@ public abstract class SharedExplosionSystem : EntitySystem
                                         int maxTileBreak = int.MaxValue,
                                         bool canCreateVacuum = true,
                                         EntityUid? user = null,
-                                        bool addLog = true)
+                                        bool addLog = true,
+                                        float? cappedIntensity = null)
     {
     }
 
