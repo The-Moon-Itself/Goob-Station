@@ -543,6 +543,7 @@
     tileBreakScale: 3.6
   - type: Projectile
     penetrate: true
+    deleteOnCollide: false
   - type: Reflective
     reflective:
     - None
