@@ -34,6 +34,11 @@ public sealed partial class TransferValveComponent : Component
     public bool ValveOpen = false;
 
     /// <summary>
+    /// Whether the TTV is ready to be opened
+    /// </summary>
+    public bool Ready => !ValveOpen && Tank1Slot.HasItem && Tank2Slot.HasItem;
+
+    /// <summary>
     /// Time it takes in seconds to toggle the valve, gives atmos system time to process a potential gas tank rupture.
     /// </summary>
     [DataField]

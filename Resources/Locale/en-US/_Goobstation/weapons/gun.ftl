@@ -18,3 +18,11 @@ mode-selected = Selected {$mode}
 # RequiresDualWieldComponent
 dual-wield-component-requires = That doesn't feel cool enough, you need to dual wield.
 gun-requires-dual-wield-component-examine = This weapon needs to be dual wielded with another of its kind in order to be fired.
+
+# Blast Cannon
+blast-cannon-bomb-not-ready = {CAPITALIZE(THE($ttv))} doesn't open.
+blast-cannon-attaching-incomplete-bomb = What good would an incomplete bomb do?
+blast-cannon-unloaded-name = pipe gun
+blast-cannon-unloaded-desc = A pipe welded onto a gun stock, with a mechanical trigger. The pipe has an opening near the top, and there seems to be a spring loaded wheel in the hole.
+blast-cannon-loaded-name = blast cannon
+blast-cannon-loaded-desc = A makeshift device used to concentrate a bomb's blast energy to a narrow wave.

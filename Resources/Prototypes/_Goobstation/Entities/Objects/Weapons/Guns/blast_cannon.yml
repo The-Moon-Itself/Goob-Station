@@ -1,0 +1,67 @@
+
+- type: entity
+  parent: BaseItem
+  id: BlastCannon
+  name: pipe gun
+  description: A pipe welded onto a gun stock, with a mechanical trigger. The pipe has an opening near the top, and there seems to be a spring loaded wheel in the hole.
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Weapons/Guns/Cannons/blast_cannon.rsi
+    layers:
+    - state: icon
+      map: [ "enum.BlastCannonVisualsLayers.icon" ]
+    - state: transfer-valve
+      map: [ "enum.BlastCannonVisualsLayers.ttv" ]
+      visible: false
+  - type: Item
+    size: Large
+  - type: Gun
+    fireRate: 1
+    soundGunshot:
+      path: /Audio/_Goobstation/Weapons/Guns/Gunshots/blastcannon.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: ContainerAmmoProvider
+    container: TransferValveSlot
+  - type: BlastCannon
+    transferValveSlot:
+        whitelist:
+          components:
+            - TransferValve
+
+- type: entity
+  parent: BaseItem
+  id: BlastCannonDebug
+  suffix: Debug
+  name: pipe gun
+  description: A pipe welded onto a gun stock, with a mechanical trigger. The pipe has an opening near the top, and there seems to be a spring loaded wheel in the hole.
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Weapons/Guns/Cannons/blast_cannon.rsi
+    layers:
+    - state: icon
+      map: [ "enum.BlastCannonVisualsLayers.icon" ]
+    - state: transfer-valve
+      map: [ "enum.BlastCannonVisualsLayers.ttv" ]
+      visible: false
+  - type: Item
+    size: Large
+  - type: Gun
+    fireRate: 1
+    soundGunshot:
+      path: /Audio/_Goobstation/Weapons/Guns/Gunshots/blastcannon.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BasicEntityAmmoProvider
+    proto: BlastWave
+    capacity: 1
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 4
+    rechargeSound:
+      path: /Audio/Items/pen_click.ogg
+  - type: BlastCannon
+    debugPower: 60
+    transferValveSlot:
+        whitelist:
+          components:
+            - TransferValve

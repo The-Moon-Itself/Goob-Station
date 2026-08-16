@@ -93,6 +93,9 @@ uplink-grey-tide-desc = An ancient artifact with magical properties. Identical t
 uplink-adv-mimery-name = Guide to Advanced Mimery Series
 uplink-adv-mimery-desc = The classical two part series on how to further hone your mime skills. Upon studying the series, the user should be able to make 3x1 invisible walls, and shoot bullets out of their fingers.
 
+uplink-blast-cannon-name = Blast Cannon
+uplink-blast-cannon-desc = A highly specialized weapon, the Blast Cannon is actually relatively simple. It contains an attachment for a tank transfer valve mounted to an angled pipe specially constructed withstand extreme pressure and temperatures, and has a mechanical trigger for triggering the transfer valve. Essentially, it turns the explosive force of a bomb into a narrow-angle blast wave projectile. Aspiring scientists may find this highly useful, as forcing the pressure shockwave into a narrow angle seems to be able to bypass whatever quirk of physics disallows explosive ranges above a certain distance, allowing for the device to use the theoretical yield of a transfer valve bomb, instead of the factual yield.
+
 # Weapons
 
 uplink-contractor-baton-name = Contractor Baton
@@ -372,7 +375,7 @@ uplink-cddisknumber-desc = Call in a threat to distract the station... good luck
 uplink-box-xenobio-name = Xenobiology slimes box
 uplink-box-xenobio-desc = Slimes for your xenobiology needs. Contains 9 random T1 slimes.
 
-#Contractor
+# Contractor
 
 uplink-moduist-contractor-name = Contractor Modsuit
 uplink-moduist-contractor-desc = This lightweight modsuit was made specifically for The Guild! Made using plastitanium for extreme durability but light-weight, comes packed with servos to to help you grab harder, critical damage detecting injectors, and a built in chameleon tech! To keep it ultra light-weight this modsuit has no storage capabilities.

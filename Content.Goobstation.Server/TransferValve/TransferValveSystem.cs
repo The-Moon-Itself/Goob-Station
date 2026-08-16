@@ -1,3 +1,4 @@
+using Content.Goobstation.Server.Weapons.Ranged;
 using Content.Goobstation.Shared.TransferValve.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.DeviceLinking.Systems;
@@ -9,6 +10,7 @@ using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Examine;
 using Content.Shared.Explosion;
 using Content.Shared.Verbs;
+using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
@@ -44,6 +46,8 @@ public sealed class TransferValveSystem : EntitySystem
         SubscribeLocalEvent<TransferValveComponent, GetVerbsEvent<AlternativeVerb>>(OnGetVerbs);
 
         SubscribeLocalEvent<TransferValveComponent, SignalReceivedEvent>(OnSignalReceived);
+
+        SubscribeLocalEvent<TransferValveComponent, AmmoShotEvent>(OnFired);
     }
 
     private void OnComponentInit(Entity<TransferValveComponent> ent, ref ComponentInit args)
@@ -234,13 +238,62 @@ public sealed class TransferValveSystem : EntitySystem
         }
     }
 
-    public void OnSignalReceived(Entity<TransferValveComponent> ent, ref SignalReceivedEvent args)
+    private void OnSignalReceived(Entity<TransferValveComponent> ent, ref SignalReceivedEvent args)
     {
         if (args.Port == ent.Comp.TogglePort && ent.Comp.NextToggle < _gameTiming.CurTime)
         {
             ent.Comp.NextToggle = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.Cooldown);
             ToggleValve(ent);
             return;
+        }
+    }
+
+
+    /// <summary>
+    /// Mixes the tanks into a temporary gas mixture to calculate an approximate range of the bomb.
+    /// This does actually drain both tanks irreveribly, don't use this if you plan on using the TTV later.
+    /// </summary>
+    /// <param name="reactionVolumeMod">Additional volume to use, if this is supposed to be mixed outside the TTV. A higher valve makes a weaker bomb</param>
+    /// <param name="prereaction">Checks if the tank wouldn't fragment after a single reaction.</param>
+    /// <param name="reactionCycles">How many reactions to do. Gas tanks do 3 on fragmentation.</param>
+    /// <returns>The theoretical range of the bomb.</returns>
+    private float CalculateBomb(Entity<TransferValveComponent> ent, float reactionVolumeMod = 0, bool prereaction = true, int reactionCycles = 3)
+    {
+        // Using tank 2 for fragment pressure calculations.
+        if (ent.Comp.ValveOpen || !ent.Comp.Tank1Slot.Item.HasValue || !_entManager.TryGetComponent<GasTankComponent>(ent.Comp.Tank2Slot.Item, out var tank_two))
+            return 0;
+        GasMixture temp = new(reactionVolumeMod);
+        MergeGases(ent.Comp, temp);
+        // TECHNICALLY if the pressure is already greater than fragment pressure from the merge alone, a real gas tank wouldn't get this extra react,
+        // but I'll still let it have it here as a treat and for parity with SS13
+        if (prereaction)
+        {
+            _atmosphereSystem.React(temp, null);
+            if (temp.Pressure < tank_two.TankFragmentPressure)
+                return 0;
+        }
+        for (int i = 0; i < reactionCycles; i++)
+        {
+            _atmosphereSystem.React(temp, null);
+        }
+        var pressure = temp.Pressure;
+        if (pressure < tank_two.TankFragmentPressure)
+            return 0;
+        return MathF.Sqrt((pressure - tank_two.TankFragmentPressure) / tank_two.TankFragmentScale);
+    }
+
+    private void OnFired(Entity<TransferValveComponent> ent, ref AmmoShotEvent args)
+    {
+        float? power = null;
+        BlastWaveComponent? blastWave = null;
+        foreach (var shot in args.FiredProjectiles)
+        {
+            if (!Resolve(shot, ref blastWave))
+                continue;
+            if (blastWave.Power > 0)
+                continue;
+            power ??= CalculateBomb(ent);
+            blastWave.Power = power.Value;
         }
     }
 }

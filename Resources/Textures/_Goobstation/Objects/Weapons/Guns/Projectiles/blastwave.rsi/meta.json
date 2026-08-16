@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Taken from Beestation at https://github.com/BeeStation/BeeStation-Hornet/commit/607ad8a93d04d23deb8fbd7b1585b29606f9e4e5",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "bullet"
+        }
+    ]
+}

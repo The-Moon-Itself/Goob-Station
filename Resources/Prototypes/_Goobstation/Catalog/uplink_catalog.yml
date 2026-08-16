@@ -2048,3 +2048,25 @@
     whitelist:
       tags:
       - ContractorUplink
+
+
+- type: listing
+  id: UplinkBlastCannon
+  name: uplink-blast-cannon-name
+  description: uplink-blast-cannon-desc
+  icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Cannons/blast_cannon.rsi, state: icon }
+  productEntity: BlastCannon
+  cost:
+    Telecrystal: 70
+  categories:
+  - UplinkJob
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:BuyerDepartmentCondition
+    whitelist:
+    - Science
+  - !type:BuyerWhitelistCondition
+    blacklist:
+      components:
+      - SurplusBundle

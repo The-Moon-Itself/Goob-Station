@@ -529,3 +529,22 @@
       type: Add
       time: 20
       refresh: true
+
+- type: entity
+  id: BlastWave
+  parent: BaseBullet
+  name: blast wave
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Weapons/Guns/Projectiles/blastwave.rsi
+  - type: BlastWave
+    explosionType: MicroBomb
+    maxIntensity: 20
+    tileBreakScale: 3.6
+  - type: Projectile
+    penetrate: true
+  - type: Reflective
+    reflective:
+    - None
+
