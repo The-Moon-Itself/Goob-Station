@@ -45,7 +45,7 @@ public sealed partial class DopplerArrayComponent : Component
     /// Larger bombs approach this asymptotically.
     /// </summary>
     [DataField]
-    public float MaxResearchPayout = 50000;
+    public float MaxResearchPayout = 30000;
 
     /// <summary>
     /// The explosion range needed to payout 90% of the max research point payout.

@@ -16,7 +16,7 @@ public sealed partial class MassDriverComponent : Component
     /// How far the mass driver should launch items
     /// </summary>
     [DataField]
-    public float DriveRange = 10;
+    public float DriveRange = 50;
     /// <summary>
     /// How much power the mass driver should draw per item
     /// </summary>
