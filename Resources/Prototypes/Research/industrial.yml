@@ -34,6 +34,9 @@
   tier: 1
   cost: 5000
   recipeUnlocks:
+  # Goobstation addition
+  - ResearchDopplerArrayComputerCircuitboard
+  # Goobstation addition end
   - RadarConsoleCircuitboard
   - HandHeldMassScanner
   # Goobstation R&D Console rework start

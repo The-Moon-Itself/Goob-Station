@@ -103,6 +103,12 @@
 
 - type: latheRecipe
   parent: [ BaseCircuitboardRecipe, BaseResearchComputerRecipeCategory ]
+  icon: _Goobstation/Structures/Machines/Icons/Computers/doppler_array.png
+  id: ResearchDopplerArrayComputerCircuitboard
+  result: ResearchDopplerArrayComputerCircuitboard
+
+- type: latheRecipe
+  parent: [ BaseCircuitboardRecipe, BaseResearchComputerRecipeCategory ]
   icon: _Goobstation/Structures/Machines/Icons/Computers/xenobiology.png
   id: XenobiologyBountyComputerCircuitboard
   result: XenobiologyBountyComputerCircuitboard

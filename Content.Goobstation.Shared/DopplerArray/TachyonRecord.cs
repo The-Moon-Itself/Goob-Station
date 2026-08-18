@@ -12,7 +12,7 @@ namespace Content.Goobstation.Shared.DopplerArray;
 public sealed partial record TachyonRecord
 {
     /// <summary>
-    /// The name of the log recording
+    /// The name of the record
     /// </summary>
     public string Name = "Log Recording";
 

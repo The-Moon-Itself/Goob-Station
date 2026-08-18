@@ -2,11 +2,12 @@
 using Content.Goobstation.Shared.DopplerArray;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Research.Components;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
-namespace Content.Goobstation.Server.DopplerArray;
+namespace Content.Goobstation.Shared.DopplerArray;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 public sealed partial class DopplerArrayComponent : Component
 {
     /// <summary>
@@ -22,22 +23,34 @@ public sealed partial class DopplerArrayComponent : Component
     public float Cooldown = 5f;
 
     /// <summary>
-    /// Timestamp for when the array is off cooldown.
+    /// Timestamp for when the array is off cooldown to detect another explosion.
     /// </summary>
-    public TimeSpan NextAnnounce = TimeSpan.Zero;
+    public TimeSpan NextSense = TimeSpan.Zero;
+
+    /// <summary>
+    /// How long to wait between each message spoken
+    /// </summary>
+    [DataField]
+    public float AnnouceCooldown = 0.1f;
+
+    /// <summary>
+    /// Messages to say
+    /// </summary>
+    public Queue<String> MessageBuffer = new();
 
     /// <summary>
     /// The number to be given to the name of the next record.
     /// </summary>
     public int RecordNumber = 1;
 
+    [DataField, AutoNetworkedField]
     public List<TachyonRecord> Records = new();
 
     /// <summary>
     /// Whether the doppler array is capable of generating research points
     /// This requires a Research Client Component on the entity to funciton.
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public bool ResearchEnabled = false;
 
     /// <summary>
@@ -56,7 +69,7 @@ public sealed partial class DopplerArrayComponent : Component
     /// <summary>
     /// Whether the doppler array is capable of selling explosion information.
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public bool ProfitEnabled = false;
 
     /// <summary>

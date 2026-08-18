@@ -15,10 +15,10 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Timing;
 namespace Content.Goobstation.Server.DopplerArray
 {
-    public sealed class DopplerArraySystem : EntitySystem
+    public sealed class DopplerArraySystem : SharedDopplerArraySystem
     {
         [Dependency] private readonly CargoSystem _cargo = default!;
-        [Dependency] private readonly ChatSystem _chatSystem = default!;
+        [Dependency] private readonly SharedChatSystem _chatSystem = default!;
         [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
         [Dependency] private readonly IEntityManager _entManager = default!;
         [Dependency] private readonly ExplosionSystem _explosion = default!;
@@ -28,18 +28,47 @@ namespace Content.Goobstation.Server.DopplerArray
         [Dependency] private readonly ResearchSystem _research = default!;
         [Dependency] private readonly StationSystem _station = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
-        [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
         // The budget of whatever client CC is selling bomb recipes to.
         // Should only be set at round start.
         private int _toxinsPayoutBudget;
+        // Which dopplers are actively announcing detected explosions
+        private readonly Dictionary<Entity<DopplerArrayComponent>, float> _speakingDopplers = new();
         public override void Initialize()
         {
             base.Initialize();
             SubscribeLocalEvent<GlobalExplosionEvent>(OnGlobalExplosion);
-            SubscribeLocalEvent<DopplerArrayComponent, DopplerArrayDeleteRecord>(OnDeleteRecord);
             // Total money that can be paid out by doppler arrays in a single round.
             _toxinsPayoutBudget = 500000;
+        }
+        private void PopMessage(Entity<DopplerArrayComponent> ent)
+        {
+            if (ent.Comp.MessageBuffer.TryDequeue(out var message))
+            {
+                _chatSystem.TrySendInGameICMessage(ent, message, InGameICChatType.Speak, false);
+                _speakingDopplers[ent] = ent.Comp.AnnouceCooldown;
+            }
+            else
+                _speakingDopplers.Remove(ent);
+        }
+
+        private void QueueMessage(Entity<DopplerArrayComponent> ent, string message)
+        {
+            ent.Comp.MessageBuffer.Enqueue(message);
+            if (!_speakingDopplers.ContainsKey(ent))
+                _speakingDopplers[ent] = ent.Comp.AnnouceCooldown;
+        }
+
+        public override void Update(float frameTime)
+        {
+            base.Update(frameTime);
+            foreach (var (ent, time) in _speakingDopplers)
+            {
+                if (time <= frameTime)
+                    PopMessage(ent);
+                else
+                    _speakingDopplers[ent] = time - frameTime;
+            }
         }
 
         private void OnGlobalExplosion(ref GlobalExplosionEvent args)
@@ -53,22 +82,13 @@ namespace Content.Goobstation.Server.DopplerArray
             }
         }
 
-        private void OnDeleteRecord(Entity<DopplerArrayComponent> ent, ref DopplerArrayDeleteRecord args)
-        {
-            var index = (int) args.Index;
-            if (index >= ent.Comp.Records.Count)
-                return;
-            ent.Comp.Records.RemoveAt(index);
-            UpdateUserInterface(ent);
-        }
-
         private void SenseExplosion(Entity<DopplerArrayComponent> ent, ref GlobalExplosionEvent args)
         {
             if (!IsPowered(ent))
                 return;
-            if (ent.Comp.NextAnnounce > _gameTiming.CurTime)
+            if (ent.Comp.NextSense > _gameTiming.CurTime)
                 return;
-            ent.Comp.NextAnnounce = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.Cooldown);
+            ent.Comp.NextSense = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.Cooldown);
             var stationTime = _gameTiming.CurTime.Subtract(_gameTicker.RoundStartTimeSpan);
             var newRecord = new TachyonRecord()
             {
@@ -79,13 +99,12 @@ namespace Content.Goobstation.Server.DopplerArray
                 TheoreticalRadius = _explosion.IntensityToRadius(args.OrigIntensity, args.IntensitySlope, args.MaxIntensity)
             };
             ent.Comp.Records.Add(newRecord);
-            UpdateUserInterface(ent);
-            _chatSystem.TrySendInGameICMessage(ent, Loc.GetString("doppler-array-explosion-detected"), InGameICChatType.Speak, false);
-            _chatSystem.TrySendInGameICMessage(ent, Loc.GetString("doppler-array-location", ("x", MathF.Round(args.Epicenter.X)), ("y", MathF.Round(args.Epicenter.Y))), InGameICChatType.Speak, false);
-            _chatSystem.TrySendInGameICMessage(ent, args.OrigIntensity > args.Intensity ?
+            Dirty(ent);
+            QueueMessage(ent, Loc.GetString("doppler-array-explosion-detected"));
+            QueueMessage(ent, Loc.GetString("doppler-array-location", ("x", MathF.Round(args.Epicenter.X)), ("y", MathF.Round(args.Epicenter.Y))));
+            QueueMessage(ent, args.OrigIntensity > args.Intensity ?
                 Loc.GetString("doppler-array-factual-theoretical-radius", ("factual_radius", MathF.Round(newRecord.FactualRadius)), ("theoretical_radius", MathF.Round(newRecord.TheoreticalRadius))) :
-                Loc.GetString("doppler-array-factual-radius", ("factual_radius", MathF.Round(newRecord.FactualRadius))),
-                InGameICChatType.Speak, false);
+                Loc.GetString("doppler-array-factual-radius", ("factual_radius", MathF.Round(newRecord.FactualRadius))));
             CalculatePayout(ent, newRecord);
         }
 
@@ -98,7 +117,7 @@ namespace Content.Goobstation.Server.DopplerArray
             // Prevent things like C4 or small chem bombs from giving science money.
             if (record.TheoreticalRadius < ent.Comp.PayoutRequiredRadius)
             {
-                _chatSystem.TrySendInGameICMessage(ent, Loc.GetString("doppler-array-research-below-minimum"), InGameICChatType.Speak, false);
+                QueueMessage(ent, Loc.GetString("doppler-array-research-below-minimum"));
                 return;
             }
 
@@ -116,14 +135,14 @@ namespace Content.Goobstation.Server.DopplerArray
             // Abort if no payout
             if (researchPayout <= 0)
             {
-                _chatSystem.TrySendInGameICMessage(ent, Loc.GetString("doppler-array-research-not-peak"), InGameICChatType.Speak, false);
+                QueueMessage(ent, Loc.GetString("doppler-array-research-not-peak"));
                 return;
             }
 
             if (ent.Comp.ResearchEnabled && (client?.Server.HasValue ?? false))
                 _research.ModifyServerPoints(client.Server.Value, researchPayout, null, ResearchServerPointSources.Toxins);
             else if (ent.Comp.ResearchEnabled && client != null)
-                _chatSystem.TrySendInGameICMessage(ent, Loc.GetString("doppler-array-research-missing-server"), InGameICChatType.Speak, false);
+                QueueMessage(ent, Loc.GetString("doppler-array-research-missing-server"));
 
             var stationUid = _station.GetOwningStation(ent);
             if (ent.Comp.ProfitEnabled && TryComp(stationUid, out StationBankAccountComponent? bank))
@@ -150,17 +169,12 @@ namespace Content.Goobstation.Server.DopplerArray
                 default: // Somehow neither
                     return;
             }
-            _chatSystem.TrySendInGameICMessage(ent, Loc.GetString(payout_loc_string, ("research", researchPayout), ("profit", profitPayout)), InGameICChatType.Speak, false);
+            QueueMessage(ent, Loc.GetString(payout_loc_string, ("research", researchPayout), ("profit", profitPayout)));
         }
 
         private bool IsPowered(Entity<DopplerArrayComponent> ent)
         {
             return _power.IsPowered(ent);
-        }
-
-        private void UpdateUserInterface(Entity<DopplerArrayComponent> ent)
-        {
-            _ui.SetUiState(ent.Owner, DopplerArrayUIKey.Key, new DopplerArrayUIState(ent.Comp.Records));
         }
     }
 }

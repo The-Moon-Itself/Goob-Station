@@ -1,9 +1,11 @@
 - type: entity
-  parent: [BaseMachinePowered, ConstructibleMachine]
+  parent: BaseComputerAiAccess
   id: ResearchDopplerArray
   name: tachyon-doppler research array
   description: A highly precise directional sensor array which measures the release of quants from decaying tachyons. The doppler shifting of the mirror-image formed by these quants can reveal the size, location and temporal affects of energetic disturbances within a large radius ahead of the array.
   components:
+  - type: Computer
+    board: ResearchDopplerArrayComputerCircuitboard
   - type: DopplerArray
     researchEnabled: true
     profitEnabled: true
@@ -11,6 +13,8 @@
     interfaces:
       enum.DopplerArrayUIKey.Key:
         type: DopplerArrayBoundUserInterface
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
   - type: ActivatableUIRequiresPower
   - type: Speech
     speechVerb: Robotic

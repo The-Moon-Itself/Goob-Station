@@ -21,6 +21,7 @@
   recipes:
   - SlimeGrinderMachineCircuitboard
   - XenobiologyBountyComputerCircuitboard
+  - ResearchDopplerArrayComputerCircuitboard
 
 - type: latheRecipePack
   id: XenobagHoldingPack

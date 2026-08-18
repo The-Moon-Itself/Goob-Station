@@ -8,8 +8,10 @@ namespace Content.Goobstation.Client.DopplerArray;
 [GenerateTypedNameReferences]
 public sealed partial class DopplerArrayWindow : FancyWindow
 {
+    [Dependency] private readonly IEntityManager _entManager = default!;
     private uint? _index;
     public Action<uint>? OnDeleteHistory;
+    public Action? OnServerButtonPressed;
     public DopplerArrayWindow()
     {
         RobustXamlLoader.Load(this);
@@ -36,6 +38,32 @@ public sealed partial class DopplerArrayWindow : FancyWindow
             _index = null;
             DeleteButton.Disabled = true;
         };
+
+        ServerButton.OnPressed += _ => OnServerButtonPressed?.Invoke();
+    }
+
+    public void ClearRecords()
+    {
+        RecordContainer.Clear();
+        NoRecords.Visible = true;
+        _index = null;
+    }
+
+    public void AddRecord(TachyonRecord entry)
+    {
+        NoRecords.Visible = false;
+        var line = Loc.GetString("doppler-array-ui-record-timestamp", ("time", entry.Timestamp.ToString()));
+        line = Loc.GetString("doppler-array-ui-record-epicenter", ("x", MathF.Round(entry.Coordinates.X)), ("y", MathF.Round(entry.Coordinates.Y)));
+        if (entry.TheoreticalRadius > entry.FactualRadius)
+        {
+            line += " " + Loc.GetString("doppler-array-ui-record-factual-radius", ("factual_radius", MathF.Round(entry.FactualRadius)));
+            line += " " + Loc.GetString("doppler-array-ui-record-theoretical-radius", ("theoretical_radius", MathF.Round(entry.TheoreticalRadius)));
+        }
+        else
+        {
+            line += " " + Loc.GetString("doppler-array-ui-record-radius", ("radius", MathF.Round(entry.FactualRadius)));
+        }
+        RecordContainer.AddItem(line);
     }
 
     public void UpdateState(DopplerArrayUIState state)
@@ -59,6 +87,12 @@ public sealed partial class DopplerArrayWindow : FancyWindow
         }
 
         _index = null;
+
+    }
+
+    public void SetResearchEnabled(bool researchEnabled)
+    {
+        ServerButton.Visible = researchEnabled;
     }
 
 }

@@ -20,3 +20,14 @@
     state: cpu_medical
   - type: ComputerBoard
     prototype: ComputerVirology
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: ResearchDopplerArrayComputerCircuitboard
+  name: tachyon-doppler research array computer board
+  description: A computer printed circuit board for a tachyon-doppler research array.
+  components:
+  - type: Sprite
+    state: cpu_science
+  - type: ComputerBoard
+    prototype: ResearchDopplerArray

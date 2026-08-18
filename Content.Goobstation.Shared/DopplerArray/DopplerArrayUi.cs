@@ -14,9 +14,12 @@ public sealed class DopplerArrayUIState : BoundUserInterfaceState
 {
     public List<TachyonRecord> Records;
 
-    public DopplerArrayUIState(List<TachyonRecord> records)
+    public bool ResearchEnabled;
+
+    public DopplerArrayUIState(List<TachyonRecord> records, bool researchEnabled)
     {
         Records = records;
+        ResearchEnabled = researchEnabled;
     }
 }
 

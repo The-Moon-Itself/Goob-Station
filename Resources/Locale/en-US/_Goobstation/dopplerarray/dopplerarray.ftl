@@ -2,6 +2,7 @@ doppler-array-log-recording = Log Recording {$number}
 doppler-array-window-title = Tachyon-Doppler Sensor Array
 doppler-array-ui-no-records = No recordings
 doppler-array-ui-delete-entry = Delete Selected Entry
+doppler-array-ui-server-selection-button = Server
 
 doppler-array-ui-record-timestamp = Explosive distrubance recorded at {$time}
 doppler-array-ui-record-epicenter = Epicenter at: ({$x}, {$y}).
