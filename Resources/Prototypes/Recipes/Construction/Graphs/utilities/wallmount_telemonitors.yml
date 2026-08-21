@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 
+# Goob edit
 - type: constructionGraph
   id: WallmountTelescreen
   start: start
@@ -145,6 +146,8 @@
             - !type:GivePrototype
               prototype: SheetGlass1
               amount: 2
+#Goob edit end
+
 # TVs
 
 - type: constructionGraph

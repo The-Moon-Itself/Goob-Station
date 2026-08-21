@@ -23,10 +23,12 @@ public sealed partial class ResearchServerComponent : Component
     [DataField("points"), ViewVariables(VVAccess.ReadWrite)]
     public int Points;
 
+    // Goob edit
     /// <summary>
     /// The total points earned by the server from different sources.
     /// </summary>
     public Dictionary<ResearchServerPointSources, int> PointsBySource = new();
+    // Goob edit end
 
     /// <summary>
     /// A unique numeric id representing the server
@@ -68,6 +70,8 @@ public readonly record struct ResearchServerPointsChangedEvent(EntityUid Server,
 [ByRefEvent]
 public record struct ResearchServerGetPointsPerSecondEvent(EntityUid Server, int Points);
 
+// Goob edit
+
 /// <summary>
 /// Different sources of research points that one might want to track, such as to limit the amount of points granted from one method.
 /// </summary>
@@ -75,3 +79,4 @@ public enum ResearchServerPointSources : byte
 {
     Toxins
 }
+// Goob edit end

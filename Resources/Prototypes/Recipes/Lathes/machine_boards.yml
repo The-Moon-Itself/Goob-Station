@@ -148,10 +148,10 @@
   icon: { sprite: Structures/Piping/Atmospherics/Portable/portable_scrubber.rsi, state: icon } # Goobstation
   result: PortableScrubberMachineCircuitBoard
 
-- type: latheRecipe
+- type: latheRecipe # Goobstation
   parent: [ BaseCircuitboardRecipe, BaseEngineeringMachineRecipeCategory ]
   id: PortablePumpMachineCircuitBoard
-  icon: { sprite: Structures/Piping/Atmospherics/Portable/portable_scrubber.rsi, state: icon } # Goobstation
+  icon: { sprite: Structures/Piping/Atmospherics/Portable/portable_scrubber.rsi, state: icon }
   result: PortablePumpMachineCircuitBoard
 
 - type: latheRecipe
@@ -295,7 +295,7 @@
   parent: [BaseCircuitboardRecipe]
   id: SmartFridgeCircuitboard
   result: SmartFridgeCircuitboard
-  
+
 # Bar
 - type: latheRecipe
   parent: [ BaseCircuitboardRecipe, BaseServiceMachineRecipeCategory ]

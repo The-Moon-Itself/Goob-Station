@@ -206,7 +206,7 @@ public sealed partial class ExplosionSystem
     ///     Find entities on a grid tile using the EntityLookupComponent and apply explosion effects.
     /// </summary>
     /// <returns>True if the underlying tile can be uprooted, false if the tile is blocked by a dense entity</returns>
-    public bool ExplodeTile(BroadphaseComponent lookup,
+    public bool ExplodeTile(BroadphaseComponent lookup, //Goob edit, made public
         Entity<MapGridComponent> grid,
         Vector2i tile,
         float throwForce,
@@ -315,7 +315,7 @@ public sealed partial class ExplosionSystem
     /// <summary>
     ///     Same as <see cref="ExplodeTile"/>, but for SPAAAAAAACE.
     /// </summary>
-    public void ExplodeSpace(BroadphaseComponent lookup,
+    public void ExplodeSpace(BroadphaseComponent lookup, //Goob edit, made public
         Matrix3x2 spaceMatrix,
         Matrix3x2 invSpaceMatrix,
         Vector2i tile,
@@ -1014,7 +1014,7 @@ public sealed class QueuedExplosion(ExplosionPrototype proto)
     public ExplosionPrototype Proto = proto;
     public float TotalIntensity, Slope, MaxTileIntensity, TileBreakScale;
 
-    public float? CappedIntensity = null;
+    public float? CappedIntensity = null; //Goob edit
     public int MaxTileBreak;
     public bool CanCreateVacuum;
     public EntityUid? Cause; // The entity that exploded, for logging purposes.

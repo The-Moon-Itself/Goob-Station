@@ -2,17 +2,15 @@
 using Content.Goobstation.Shared.DopplerArray;
 using Content.Shared.Cargo.Components;
 using Content.Shared.Chat;
-using Content.Shared.Explosion;
 using Content.Shared.GameTicking;
 using Content.Shared.Research.Components;
 using Content.Server.Cargo.Systems;
-using Content.Server.Chat.Systems;
 using Content.Server.Explosion.EntitySystems;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Systems;
 using Content.Server.Station.Systems;
-using Robust.Server.GameObjects;
 using Robust.Shared.Timing;
+using Content.Goobstation.Shared.Explosion;
 namespace Content.Goobstation.Server.DopplerArray
 {
     public sealed class DopplerArraySystem : SharedDopplerArraySystem

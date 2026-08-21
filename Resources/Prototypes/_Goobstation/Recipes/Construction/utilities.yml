@@ -33,3 +33,13 @@
   category: construction-category-utilities
   placementMode: SnapgridCenter
   canBuildInImpassable: false
+
+- type: construction
+  id: WallmountWirelessTelescreen
+  graph: WallmountTelescreen
+  startNode: start
+  targetNode: WirelessTelescreen
+  category: construction-category-utilities
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true

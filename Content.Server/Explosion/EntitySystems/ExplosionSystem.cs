@@ -35,6 +35,9 @@ using Robust.Shared.Utility;
 using Content.Shared.Armor;
 using Content.Shared.Body.Systems;
 
+// Goobstation edit
+using Content.Goobstation.Shared.Explosion;
+
 namespace Content.Server.Explosion.EntitySystems;
 
 public sealed partial class ExplosionSystem : SharedExplosionSystem
@@ -157,6 +160,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             args.DamageCoefficient *= modifier;
     }
 
+    //Goob edit, added cappedIntensity and cappedRadius
+
     /// <inheritdoc/>
     public override void TriggerExplosive(EntityUid uid, ExplosiveComponent? explosive = null, bool delete = true, float? totalIntensity = null, float? radius = null, EntityUid? user = null, float? cappedIntensity = null, float? cappedRadius = null)
     {
@@ -176,9 +181,11 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             totalIntensity ??= RadiusToIntensity((float)radius, explosive.IntensitySlope, explosive.MaxIntensity);
         totalIntensity ??= explosive.TotalIntensity;
 
+        // Goob edit
         // Same as above with capped radius and intensity.
         if (cappedRadius != null)
             cappedIntensity ??= RadiusToIntensity((float) cappedRadius, explosive.IntensitySlope, explosive.MaxIntensity);
+        // Goob edit end
 
         QueueExplosion(uid,
             explosive.ExplosionType,
@@ -190,7 +197,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             explosive.CanCreateVacuum,
             user,
             true,
+        // Goob edit
             cappedIntensity);
+        // Goob edit end
 
         if (explosive.DeleteAfterExplosion ?? delete)
             QueueDel(uid);
@@ -259,7 +268,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         bool canCreateVacuum = true,
         EntityUid? user = null,
         bool addLog = true,
+    //Goob edit
         float? cappedIntensity = null)
+    //Goob edit end
     {
         var pos = Transform(uid);
 
@@ -267,6 +278,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         var posFound = _transformSystem.TryGetMapOrGridCoordinates(uid, out var gridPos, pos);
 
+        //Goob edit, added cappedIntensity parameter
         QueueExplosion(mapPos, typeId, totalIntensity, slope, maxTileIntensity, uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false, cappedIntensity);
 
         if (!addLog)
@@ -274,6 +286,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         if (user == null)
         {
+            //Goob edit, capped intensity in log
             _adminLogger.Add(LogType.Explosion, LogImpact.High,
                 $"{ToPrettyString(uid):entity} exploded ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
         }
@@ -283,10 +296,12 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             var logImpact = (alertMinExplosionIntensity > -1 && totalIntensity >= alertMinExplosionIntensity)
                 ? LogImpact.Extreme
                 : LogImpact.High;
+            // Goob edit, same changes to logs as above
             if (posFound)
                 _adminLogger.Add(LogType.Explosion, logImpact, $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{gridPos:coordinates} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
             else
                 _adminLogger.Add(LogType.Explosion, logImpact, $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:[Grid or Map not found] with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
+            // Goob edit end
         }
     }
 
@@ -304,7 +319,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         int maxTileBreak = int.MaxValue,
         bool canCreateVacuum = true,
         bool addLog = true,
+    // Goob edit
         float? cappedIntensity = null)
+    //Goob edit end
     {
         if (totalIntensity <= 0 || slope <= 0)
             return;
@@ -316,6 +333,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         }
 
         if (addLog) // dont log if already created a separate, more detailed, log.
+            //Goob edit, capped intensity in log
             _adminLogger.Add(LogType.Explosion, LogImpact.High, $"Explosion ({typeId}) spawned at {epicenter:coordinates} with intensity {MathF.Min(totalIntensity, cappedIntensity ?? totalIntensity)} slope {slope}");
 
         // try to combine explosions on the same tile if they are the same type
@@ -331,9 +349,10 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
                 continue;
 
             // they are close enough to combine so just add total intensity and prevent queuing another one
-            //
+            // Goob edit
             if ((queued.CappedIntensity ?? cappedIntensity) != null)
                 queued.CappedIntensity = queued.CappedIntensity ?? queued.TotalIntensity + cappedIntensity ?? totalIntensity;
+            // Goob edit end
             queued.TotalIntensity += totalIntensity;
             return;
         }
@@ -365,6 +384,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         if (!_map.MapExists(pos.MapId))
             return null;
 
+        // Goob edit, capped intensity
         var results = GetExplosionTiles(pos, queued.Proto.ID, MathF.Min(queued.TotalIntensity, queued.CappedIntensity ?? queued.TotalIntensity), queued.Slope, queued.MaxTileIntensity);
 
         if (results == null)
@@ -375,6 +395,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         var visualEnt = CreateExplosionVisualEntity(pos, queued.Proto.ID, spaceMatrix, spaceData, gridData.Values, iterationIntensity);
 
         // camera shake
+        // Goob edit, capped intensity
         CameraShake(iterationIntensity.Count * 4f, pos, MathF.Min(queued.TotalIntensity, queued.CappedIntensity ?? queued.TotalIntensity));
 
         //For whatever bloody reason, sound system requires ENTITY coordinates.
@@ -408,8 +429,10 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         _audio.PlayGlobal(farSound, farFilter, true, farSound.Params);
 
+        // Goob edit
         var globExpEv = new GlobalExplosionEvent(pos, MathF.Min(queued.TotalIntensity, queued.CappedIntensity ?? queued.TotalIntensity), queued.TotalIntensity, queued.Slope, queued.MaxTileIntensity);
         RaiseLocalEvent(ref globExpEv);
+        // Goob edit end
 
         return new Explosion(this,
             queued.Proto,

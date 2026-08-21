@@ -281,7 +281,7 @@
     state: cpu_service
   - type: ComputerBoard
     prototype: ComputerSurveillanceWirelessCameraMonitor
-  - type: Tag
+  - type: Tag # Goobstation
     tags:
       - SurveillanceWirelessCameraMonitorCircuitboard
 

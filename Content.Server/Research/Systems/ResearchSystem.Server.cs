@@ -157,16 +157,21 @@ public sealed partial class ResearchSystem
     /// <param name="uid">The server</param>
     /// <param name="points">The amount of points being added</param>
     /// <param name="component"></param>
+    // Goob edit
+    /// <param name="pointSource">What the source of these points are from</param>
     public void ModifyServerPoints(EntityUid uid, int points, ResearchServerComponent? component = null, ResearchServerPointSources? pointSource = null)
+    // Goob edit end
     {
         if (points == 0)
             return;
 
         if (!Resolve(uid, ref component))
             return;
+        // Goob edit
         component.Points += points;
         if (pointSource != null)
             component.PointsBySource[pointSource.Value] = points + (component.PointsBySource.TryGetValue(pointSource.Value, out var oldPoints) ? oldPoints : 0);
+        // Goob edit end
         var ev = new ResearchServerPointsChangedEvent(uid, component.Points, points);
         foreach (var client in component.Clients)
         {
@@ -175,6 +180,8 @@ public sealed partial class ResearchSystem
         Dirty(uid, component);
     }
 
+
+    // Goob edit
     public int GetServerPointsByType(EntityUid uid, ResearchServerPointSources pointSource, ResearchServerComponent? component = null)
     {
         if (!Resolve(uid, ref component))
@@ -182,4 +189,5 @@ public sealed partial class ResearchSystem
 
         return component.PointsBySource.TryGetValue(pointSource, out var points) ? points : 0;
     }
+    // Goob edit end
 }

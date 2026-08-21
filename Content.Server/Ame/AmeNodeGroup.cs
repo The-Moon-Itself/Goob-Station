@@ -210,6 +210,8 @@ public sealed class AmeNodeGroup : BaseNodeGroup
             * todo: add an exact to the shielding and make this find the core closest to the controller
             * so they chain explode, after helpers have been added to make it not cancer
         */
+
+        // Goob edit, moved cap to TriggerExplosive()
         var radius = 2 * CoreCount * controller.InjectionAmount;
         _entMan.System<ExplosionSystem>().TriggerExplosive(MasterController.Value, radius: radius, delete: false, cappedRadius: 8f);
     }

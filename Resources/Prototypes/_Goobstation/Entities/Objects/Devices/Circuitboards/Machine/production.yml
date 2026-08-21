@@ -149,7 +149,7 @@
         GlassBeaker:
           amount: 2
           defaultPrototype: Beaker
-          
+
 - type: entity
   id: TelecomTransmitterCircuitboard
   parent: BaseMachineCircuitboard
@@ -164,3 +164,18 @@
       Uranium: 15
       Steel: 15
       Cable: 5
+
+- type: entity
+  id: PortablePumpMachineCircuitBoard
+  parent: BaseMachineCircuitboard
+  name: portable pump machine board
+  description: A machine printed circuit board for a portable pump.
+  components:
+  - type: Sprite
+    state: engineering
+  - type: MachineBoard
+    prototype: PortablePump
+    stackRequirements:
+      Manipulator: 3
+      Cable: 5
+      Glass: 2

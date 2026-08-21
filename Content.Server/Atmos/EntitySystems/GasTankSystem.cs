@@ -179,6 +179,7 @@ namespace Content.Server.Atmos.EntitySystems
 
                 // Let's cap the explosion, yeah?
                 // !1984
+                // Goob edit, moved cap to TriggerExplosive()
                 var cappedRange = Math.Min(GasTankComponent.MaxExplosionRange, _maxExplosionRange);
 
                 _explosions.TriggerExplosive(owner, radius: range, cappedRadius: cappedRange);

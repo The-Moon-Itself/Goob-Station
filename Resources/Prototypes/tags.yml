@@ -1426,7 +1426,7 @@
 - type: Tag
   id: SurveillanceCameraMonitorCircuitboard # ConstructionGraph: WallmountTelescreen
 
-- type: Tag
+- type: Tag # Goobstation
   id: SurveillanceWirelessCameraMonitorCircuitboard
 
 - type: Tag

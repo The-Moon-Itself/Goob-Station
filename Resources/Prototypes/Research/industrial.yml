@@ -209,7 +209,7 @@
   recipeUnlocks:
   - HellfireFreezerMachineCircuitBoard
   - PortableScrubberMachineCircuitBoard
-  - PortablePumpMachineCircuitBoard
+  - PortablePumpMachineCircuitBoard # Goobstation
   - HolofanProjector
   technologyPrerequisites:
   - AtmosphericTech
