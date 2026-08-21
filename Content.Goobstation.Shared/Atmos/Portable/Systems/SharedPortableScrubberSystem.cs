@@ -1,15 +1,19 @@
 using Content.Shared.Atmos.Visuals;
-using Content.Shared.Atmos.Portable.Components;
 using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.Containers;
+using Content.Shared.Power.EntitySystems;
+using Content.Shared.Administration.Logs;
+using Content.Shared.Database;
 
-namespace Content.Shared.Atmos.Portable.Systems;
+namespace Content.Goobstation.Shared.Atmos.Portable;
 
 public abstract class SharedPortableScrubberSystem : EntitySystem
 {
     [Dependency] protected readonly ItemSlotsSystem Slots = default!;
     [Dependency] protected readonly SharedUserInterfaceSystem UI = default!;
+    [Dependency] protected readonly SharedPowerReceiverSystem Power = default!;
     [Dependency] protected readonly SharedAppearanceSystem Appearance = default!;
+    [Dependency] protected readonly ISharedAdminLogManager AdminLogger = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -19,7 +23,9 @@ public abstract class SharedPortableScrubberSystem : EntitySystem
         SubscribeLocalEvent<PortableScrubberComponent, EntInsertedIntoContainerMessage>(OnItemInserted);
         SubscribeLocalEvent<PortableScrubberComponent, EntRemovedFromContainerMessage>(OnItemRemoved);
 
+        SubscribeLocalEvent<PortableScrubberComponent, PortableScrubberToggleMessage>(OnToggle);
         SubscribeLocalEvent<PortableScrubberComponent, PortableScrubberEjectTankMessage>(OnHoldingTankEjectMessage);
+        SubscribeLocalEvent<PortableScrubberComponent, PortableScrubberFilterGasToggleMessage>(OnFilterGasToggled);
     }
 
     private void OnComponentInit(Entity<PortableScrubberComponent> ent, ref ComponentInit args)
@@ -53,10 +59,28 @@ public abstract class SharedPortableScrubberSystem : EntitySystem
 
         if (UI.TryGetUiState<PortableScrubberBoundUserInterfaceState>(ent.Owner, PortableScrubberUiKey.Key, out var lastState))
         {
-            var newState = new PortableScrubberBoundUserInterfaceState(lastState.Enabled, lastState.Pressure, lastState.IsFull, lastState.Connected, lastState.FilterGases, null, -1f);
+            var newState = new PortableScrubberBoundUserInterfaceState(lastState.Pressure, lastState.IsFull, lastState.Connected, null, -1f);
             UI.SetUiState(ent.Owner, PortableScrubberUiKey.Key, newState);
         }
 
+        DirtyUI(ent);
+    }
+
+    protected virtual void OnToggle(Entity<PortableScrubberComponent> ent, ref PortableScrubberToggleMessage args)
+    {
+        var powerState = Power.TogglePower(ent, user: args.Actor);
+        AdminLogger.Add(LogType.AtmosPowerChanged, $"{ToPrettyString(args.Actor)} turned {(powerState ? "On" : "Off")} {ToPrettyString(ent)}");
+        DirtyUI(ent);
+    }
+
+    private void OnFilterGasToggled(Entity<PortableScrubberComponent> ent, ref PortableScrubberFilterGasToggleMessage args)
+    {
+        var added = ent.Comp.FilterGases.Add(args.ToggledGas);
+        if (!added)
+            ent.Comp.FilterGases.Remove(args.ToggledGas);
+        AdminLogger.Add(LogType.AtmosFilterChanged, LogImpact.Medium,
+                        $"{ToPrettyString(args.Actor):player} {(added ? "enabled" : "disabled")} filtering {args.ToggledGas.ToString()} on {ToPrettyString(ent):device}");
+        Dirty(ent);
         DirtyUI(ent);
     }
 

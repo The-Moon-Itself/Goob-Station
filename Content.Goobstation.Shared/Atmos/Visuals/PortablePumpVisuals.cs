@@ -1,6 +1,6 @@
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Atmos.Visuals;
+namespace Content.Goobstation.Shared.Atmos.Visuals;
 
 /// <summary>
 /// Used for the visualizer

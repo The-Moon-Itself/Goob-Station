@@ -1,7 +1,7 @@
 using Robust.Client.GameObjects;
-using Content.Shared.Atmos.Visuals;
+using Content.Goobstation.Shared.Atmos.Visuals;
 
-namespace Content.Client.Atmos.Visualizers;
+namespace Content.Goobstation.Client.Atmos.Visualizers;
 
 /// <summary>
 /// Controls client-side visuals for portable pumps.

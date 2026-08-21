@@ -32,11 +32,12 @@ public sealed class PortableScrubberSystem : VisualizerSystem<PortableScrubberVi
         {
             _sprite.LayerSetVisible((uid, args.Sprite), PortableScrubberVisualLayers.IsDraining, isDraining);
         }
-
+        // Goob edit
         if (AppearanceSystem.TryGetData<bool>(uid, PortableScrubberVisuals.HasTank, out var hasTank, args.Component))
         {
             _sprite.LayerSetVisible((uid, args.Sprite), PortableScrubberVisualLayers.HasTank, hasTank);
         }
+        // Goob edit end
     }
 }
 
@@ -45,5 +46,5 @@ public enum PortableScrubberVisualLayers : byte
     IsRunning,
 
     IsDraining,
-    HasTank
+    HasTank //Goob edit
 }

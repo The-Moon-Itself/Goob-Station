@@ -15,4 +15,4 @@ comp-portable-pump-ui-tank-pressure = Tank pressure: {$pressure} kPa
 comp-portable-pump-ui-pump-direction-releasing = {$internal} -> {$target}
 comp-portable-pump-ui-pump-direction-siphoning = {$target} -> {$internal}
 comp-portable-pump-ui-pump-output-pressure = Output pressure (kPa):
-comp-portable-pump-ui-pump-set-pressure = Set
+comp-portable-pump-ui-pump-max-pressure = Max

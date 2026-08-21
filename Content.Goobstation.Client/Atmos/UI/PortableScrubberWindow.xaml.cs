@@ -8,7 +8,7 @@ using Content.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 
-namespace Content.Client.Atmos.UI;
+namespace Content.Goobstation.Client.Atmos.UI;
 
 /// <summary>
 ///     Client-side UI used to control a portable scrubber.

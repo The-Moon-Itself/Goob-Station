@@ -1,16 +1,21 @@
 using Content.Shared.Atmos.Visuals;
-using Content.Shared.Atmos.Portable.Components;
 using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.Containers;
 using Content.Shared.Atmos.Piping.Unary.Components;
+using Content.Shared.Administration.Logs;
+using Content.Shared.Database;
+using Content.Shared.Power.EntitySystems;
+using Content.Goobstation.Shared.Atmos.Visuals;
 
-namespace Content.Shared.Atmos.Portable.Systems;
+namespace Content.Goobstation.Shared.Atmos.Portable.Systems;
 
 public abstract class SharedPortablePumpSystem : EntitySystem
 {
     [Dependency] protected readonly ItemSlotsSystem Slots = default!;
     [Dependency] protected readonly SharedUserInterfaceSystem UI = default!;
+    [Dependency] protected readonly SharedPowerReceiverSystem Power = default!;
     [Dependency] protected readonly SharedAppearanceSystem Appearance = default!;
+    [Dependency] protected readonly ISharedAdminLogManager AdminLogger = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -20,6 +25,7 @@ public abstract class SharedPortablePumpSystem : EntitySystem
         SubscribeLocalEvent<PortablePumpComponent, EntInsertedIntoContainerMessage>(OnItemInserted);
         SubscribeLocalEvent<PortablePumpComponent, EntRemovedFromContainerMessage>(OnItemRemoved);
 
+        SubscribeLocalEvent<PortablePumpComponent, PortablePumpToggleMessage>(OnToggle);
         SubscribeLocalEvent<PortablePumpComponent, PortablePumpEjectTankMessage>(OnHoldingTankEjectMessage);
         SubscribeLocalEvent<PortablePumpComponent, PortablePumpTogglePumpDirectionMessage>(OnPumpDirectionToggleMessage);
         SubscribeLocalEvent<PortablePumpComponent, PortablePumpSetPumpPressureMessage>(OnSetPumpPressureMessage);
@@ -56,10 +62,18 @@ public abstract class SharedPortablePumpSystem : EntitySystem
 
         if (UI.TryGetUiState<PortablePumpBoundUserInterfaceState>(ent.Owner, PortablePumpUiKey.Key, out var lastState))
         {
-            var newState = new PortablePumpBoundUserInterfaceState(lastState.Enabled, lastState.Pressure, lastState.Connected, lastState.PumpDirection, lastState.TargetPressure, null, -1f);
-            UI.SetUiState(ent.Owner, PortableScrubberUiKey.Key, newState);
+            var newState = new PortablePumpBoundUserInterfaceState(lastState.Pressure, lastState.Connected, null, -1f);
+            UI.SetUiState(ent.Owner, PortablePumpUiKey.Key, newState);
         }
 
+        DirtyUI(ent);
+    }
+
+    private void OnToggle(Entity<PortablePumpComponent> ent, ref PortablePumpToggleMessage args)
+    {
+        var powerState = Power.TogglePower(ent);
+        AdminLogger.Add(LogType.AtmosPowerChanged, $"{ToPrettyString(args.Actor)} turned {(powerState ? "On" : "Off")} {ToPrettyString(ent)}");
+        Appearance.SetData(ent, PortablePumpVisuals.IsRunning, Power.IsPowered(ent.Owner));
         DirtyUI(ent);
     }
 
@@ -67,25 +81,18 @@ public abstract class SharedPortablePumpSystem : EntitySystem
     {
         //Funny magic number that makes this a little more compact
         ent.Comp.PumpDirection ^= (VentPumpDirection) 1;
-        if (UI.TryGetUiState<PortablePumpBoundUserInterfaceState>(ent.Owner, PortablePumpUiKey.Key, out var lastState))
-        {
-            var newState = new PortablePumpBoundUserInterfaceState(lastState.Enabled, lastState.Pressure, lastState.Connected, ent.Comp.PumpDirection, lastState.TargetPressure, lastState.TankLabel, lastState.TankPressure);
-            UI.SetUiState(ent.Owner, PortableScrubberUiKey.Key, newState);
-        }
-
+        AdminLogger.Add(LogType.AtmosDeviceSetting, $"{ToPrettyString(args.Actor):player} set the target pressure on Portable pump {ToPrettyString(ent.Owner):device} to {(ent.Comp.PumpDirection == VentPumpDirection.Releasing ? "releasing" : "siphoning")}.");
+        Dirty(ent);
         DirtyUI(ent);
     }
 
     private void OnSetPumpPressureMessage(Entity<PortablePumpComponent> ent, ref PortablePumpSetPumpPressureMessage args)
     {
-        float pressure = Math.Clamp(args.Pressure, ent.Comp.MinimumPressure, ent.Comp.MaximumPressure);
+        float pressure = Math.Clamp(args.Pressure, 0, ent.Comp.MaximumPressure);
         ent.Comp.TargetPressure = pressure;
-        if (UI.TryGetUiState<PortablePumpBoundUserInterfaceState>(ent.Owner, PortablePumpUiKey.Key, out var lastState))
-        {
-            var newState = new PortablePumpBoundUserInterfaceState(lastState.Enabled, lastState.Pressure, lastState.Connected, lastState.PumpDirection, pressure, lastState.TankLabel, lastState.TankPressure);
-            UI.SetUiState(ent.Owner, PortableScrubberUiKey.Key, newState);
-        }
-
+        AdminLogger.Add(LogType.AtmosPressureChanged, LogImpact.Medium,
+                $"{ToPrettyString(args.Actor):player} set the pressure on {ToPrettyString(ent):device} to {pressure}kPa");
+        Dirty(ent);
         DirtyUI(ent);
     }
 

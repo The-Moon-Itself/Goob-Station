@@ -1,31 +1,27 @@
-using Content.Server.Administration.Logs;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Atmos.Piping.Unary.EntitySystems;
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NodeContainer.Nodes;
 using Content.Server.NodeContainer.NodeGroups;
-using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
-using Content.Shared.Atmos.Portable;
-using Content.Shared.Atmos.Portable.Components;
-using Content.Shared.Atmos.Portable.Systems;
 using Content.Shared.Atmos.Piping.Unary.Components;
-using Content.Shared.Atmos.Visuals;
 using Content.Shared.Database;
 using Content.Shared.IdentityManagement;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Content.Shared.Power;
 using Content.Shared.Destructible;
+using Content.Goobstation.Shared.Atmos.Portable.Systems;
+using Content.Goobstation.Shared.Atmos.Portable;
+using Content.Goobstation.Shared.Atmos.Visuals;
 
-namespace Content.Server.Atmos.Portable;
+namespace Content.Goobstation.Server.Atmos.Portable;
 
 public sealed class PortablePumpSystem : SharedPortablePumpSystem
 {
-    [Dependency] private readonly IAdminLogManager _adminLogger = default!;
     [Dependency] private readonly AtmosphereSystem _atmosphereSystem = default!;
     [Dependency] private readonly GasCanisterSystem _canisterSystem = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
@@ -45,7 +41,6 @@ public sealed class PortablePumpSystem : SharedPortablePumpSystem
         SubscribeLocalEvent<PortablePumpComponent, GasAnalyzerScanEvent>(OnScrubberAnalyzed);
 
         SubscribeLocalEvent<PortablePumpComponent, BeforeActivatableUIOpenEvent>(OnBeforeOpened);
-        SubscribeLocalEvent<PortablePumpComponent, PortablePumpToggleMessage>(OnToggle);
     }
 
     private void OnDeviceUpdated(Entity<PortablePumpComponent> ent, ref AtmosDeviceUpdateEvent args)
@@ -113,7 +108,7 @@ public sealed class PortablePumpSystem : SharedPortablePumpSystem
         if (environment != null)
             _atmosphereSystem.Merge(environment, ent.Comp.Air);
 
-        _adminLogger.Add(LogType.CanisterPurged, LogImpact.Medium, $"Portable pump {ToPrettyString(ent.Owner):canister} purged its contents of {ent.Comp.Air} into the environment.");
+        AdminLogger.Add(LogType.CanisterPurged, LogImpact.Medium, $"Portable pump {ToPrettyString(ent.Owner):canister} purged its contents of {ent.Comp.Air} into the environment.");
         ent.Comp.Air.Clear();
     }
 
@@ -128,22 +123,9 @@ public sealed class PortablePumpSystem : SharedPortablePumpSystem
         DirtyUI(ent);
     }
 
-    private void OnToggle(Entity<PortablePumpComponent> ent, ref PortablePumpToggleMessage args)
-    {
-        ApcPowerReceiverComponent? powerReceiver = null;
-        if (!Resolve(ent, ref powerReceiver))
-            return;
-
-        _power.TogglePower(ent);
-
-        Appearance.SetData(ent, PortablePumpVisuals.IsRunning, _power.IsPowered(ent));
-        DirtyUI(ent);
-    }
-
     protected override void DirtyUI(Entity<PortablePumpComponent> ent)
     {
-        if (!TryComp<ApcPowerReceiverComponent>(ent, out var powerReceiver)
-            || !Slots.TryGetSlot(ent, ent.Comp.ContainerName, out var slot))
+        if (!Slots.TryGetSlot(ent, ent.Comp.ContainerName, out var slot))
         {
             return;
         }
@@ -160,6 +142,6 @@ public sealed class PortablePumpSystem : SharedPortablePumpSystem
             tankPressure = gasTank.Air.Pressure;
         }
         UI.SetUiState(ent.Owner, PortablePumpUiKey.Key,
-            new PortablePumpBoundUserInterfaceState(!powerReceiver.PowerDisabled, ent.Comp.Air.Pressure, connected, ent.Comp.PumpDirection, ent.Comp.TargetPressure, tankLabel, tankPressure));
+            new PortablePumpBoundUserInterfaceState(ent.Comp.Air.Pressure, connected, tankLabel, tankPressure));
     }
 }

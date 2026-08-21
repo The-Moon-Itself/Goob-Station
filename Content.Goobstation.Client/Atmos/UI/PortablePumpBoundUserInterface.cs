@@ -1,9 +1,11 @@
-using Content.Shared.Atmos.Portable.Components;
-using Content.Client.Atmos.UI;
+
+using Content.Client.Power.EntitySystems;
+using Content.Goobstation.Shared.Atmos.Portable;
+using Content.Shared.Power.Components;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 
-namespace Content.Client.Atmos.UI;
+namespace Content.Goobstation.Client.Atmos.UI;
 
 [UsedImplicitly]
 public sealed class PortablePumpBoundUserInterface : BoundUserInterface
@@ -20,8 +22,29 @@ public sealed class PortablePumpBoundUserInterface : BoundUserInterface
         _window = this.CreateWindow<PortablePumpWindow>();
         _window.ToggleStatusButton.OnPressed += _ => OnToggleStatusButtonPressed();
         _window.TankEjectButton.OnPressed += _ => OnTankEjectPressed();
+        _window.PumpPressureOutputInput.OnValueChanged += args => OnPressureValueChanged(args.Value);
+        _window.MaxOutputPressureButton.OnPressed += _ => OnMaxPressureButotnPressed();
         _window.PumpDirectionButton.OnPressed += _ => OnTogglePumpDirectionButtonPressed();
-        _window.PumpOutputPressureChanged += OnSetPressureButtonPressed;
+
+        Update();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if (_window == null || !EntMan.TryGetComponent(Owner, out PortablePumpComponent? pump))
+            return;
+
+        var receiverSys = EntMan.System<PowerReceiverSystem>();
+        SharedApcPowerReceiverComponent? receiver = null;
+
+        if (receiverSys.ResolveApc(Owner, ref receiver))
+        {
+            _window.SetActive(!receiver.PowerDisabled);
+        }
+        _window.SetPumpDirection(pump.PumpDirection);
+        _window.SetTargetPressure(pump.TargetPressure);
     }
 
     private void OnToggleStatusButtonPressed()
@@ -45,12 +68,21 @@ public sealed class PortablePumpBoundUserInterface : BoundUserInterface
         SendPredictedMessage(new PortablePumpTogglePumpDirectionMessage());
     }
 
-    private void OnSetPressureButtonPressed(float pressure)
+    private void OnPressureValueChanged(float pressure)
     {
         if (_window == null)
             return;
+        _window.OutputPressure = pressure;
         SendPredictedMessage(new PortablePumpSetPumpPressureMessage(pressure));
 
+    }
+
+    private void OnMaxPressureButotnPressed()
+    {
+        if (_window == null || !EntMan.TryGetComponent(Owner, out PortablePumpComponent? pump))
+            return;
+        _window.PumpPressureOutputInput.Value = pump.MaximumPressure;
+        OnPressureValueChanged(pump.MaximumPressure);
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -59,11 +91,8 @@ public sealed class PortablePumpBoundUserInterface : BoundUserInterface
         if (_window == null
             || state is not PortablePumpBoundUserInterfaceState cast)
             return;
-        _window.SetActive(cast.Enabled);
         _window.SetPressure(cast.Pressure);
         _window.SetConnected(cast.Connected);
         _window.SetTankPressure(cast.TankLabel, cast.TankPressure);
-        _window.SetPumpDirection(cast.PumpDirection);
-        _window.SetTargetPressure(cast.TargetPressure);
     }
 }

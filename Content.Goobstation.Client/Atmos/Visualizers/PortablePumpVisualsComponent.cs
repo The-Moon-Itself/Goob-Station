@@ -1,4 +1,4 @@
-namespace Content.Client.Atmos.Visualizers;
+namespace Content.Goobstation.Client.Atmos.Visualizers;
 
 [RegisterComponent]
 public sealed partial class PortablePumpVisualsComponent : Component

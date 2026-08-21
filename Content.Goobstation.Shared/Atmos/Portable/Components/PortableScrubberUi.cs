@@ -1,6 +1,7 @@
+using Content.Shared.Atmos;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Atmos.Portable.Components;
+namespace Content.Goobstation.Shared.Atmos.Portable;
 
 [Serializable]
 [NetSerializable]
@@ -11,15 +12,7 @@ public enum PortableScrubberUiKey
 
 [Serializable]
 [NetSerializable]
-public sealed class PortableScrubberToggleMessage : BoundUserInterfaceMessage
-{
-    public bool NewStatus { get; }
-
-    public PortableScrubberToggleMessage(bool newStatus)
-    {
-        NewStatus = newStatus;
-    }
-}
+public sealed class PortableScrubberToggleMessage : BoundUserInterfaceMessage;
 
 [Serializable]
 [NetSerializable]
@@ -34,32 +27,23 @@ public sealed class PortableScrubberFilterGasToggleMessage : BoundUserInterfaceM
 
 [Serializable]
 [NetSerializable]
-public sealed class PortableScrubberEjectTankMessage : BoundUserInterfaceMessage
-{
-    public PortableScrubberEjectTankMessage()
-    {
-    }
-}
+public sealed class PortableScrubberEjectTankMessage : BoundUserInterfaceMessage;
 
 [Serializable]
 [NetSerializable]
 public sealed class PortableScrubberBoundUserInterfaceState : BoundUserInterfaceState
 {
-    public bool Enabled { get; }
     public float Pressure { get; }
     public bool IsFull { get; }
     public bool Connected { get; }
-    public HashSet<Gas> FilterGases;
     public string? TankLabel;
     public float TankPressure;
 
-    public PortableScrubberBoundUserInterfaceState(bool enabled, float pressure, bool isFull, bool connected, HashSet<Gas> filterGases, string? tankLabel, float tankPressure)
+    public PortableScrubberBoundUserInterfaceState(float pressure, bool isFull, bool connected, string? tankLabel, float tankPressure)
     {
-        Enabled = enabled;
         Pressure = pressure;
         IsFull = isFull;
         Connected = connected;
-        FilterGases = new HashSet<Gas>(filterGases);
         TankLabel = tankLabel;
         TankPressure = tankPressure;
     }

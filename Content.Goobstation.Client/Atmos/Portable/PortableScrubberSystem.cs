@@ -1,10 +1,8 @@
 
-using Content.Client.Atmos.UI;
-using Content.Shared.Atmos.Portable;
-using Content.Shared.Atmos.Portable.Systems;
-using Content.Shared.Atmos.Portable.Components;
+using Content.Goobstation.Shared.Atmos.Portable;
+using Content.Goobstation.Client.Atmos.UI;
 
-namespace Content.Client.Atmos.Portable.Systems;
+namespace Content.Goobstation.Client.Atmos.Portable.Systems;
 
 public sealed class PortableScrubberSystem : SharedPortableScrubberSystem
 {

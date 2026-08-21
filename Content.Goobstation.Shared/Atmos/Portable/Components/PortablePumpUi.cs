@@ -1,7 +1,7 @@
 using Content.Shared.Atmos.Piping.Unary.Components;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Atmos.Portable.Components;
+namespace Content.Goobstation.Shared.Atmos.Portable;
 
 [Serializable]
 [NetSerializable]
@@ -14,21 +14,15 @@ public enum PortablePumpUiKey
 [NetSerializable]
 public sealed class PortablePumpBoundUserInterfaceState : BoundUserInterfaceState
 {
-    public bool Enabled { get; }
     public float Pressure { get; }
     public bool Connected { get; }
-    public VentPumpDirection PumpDirection;
-    public float TargetPressure;
     public string? TankLabel;
     public float TankPressure;
 
-    public PortablePumpBoundUserInterfaceState(bool enabled, float pressure, bool connected, VentPumpDirection pumpDirection, float targetPressure, string? tankLabel, float tankPressure)
+    public PortablePumpBoundUserInterfaceState(float pressure, bool connected, string? tankLabel, float tankPressure)
     {
-        Enabled = enabled;
         Pressure = pressure;
         Connected = connected;
-        PumpDirection = pumpDirection;
-        TargetPressure = targetPressure;
         TankLabel = tankLabel;
         TankPressure = tankPressure;
     }

@@ -1,6 +1,6 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
-                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                      MinSize="200 260" Title="{Loc 'comp-portable-pump-ui-title'}">
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls;assembly=Content.Client"
+                      MinSize="210 260" Title="{Loc 'comp-portable-pump-ui-title'}">
     <BoxContainer Name="VboxContainer" Orientation="Vertical" Margin="5 5 5 5" SeparationOverride="10">
         <BoxContainer Name="StatusBox" Orientation="Vertical" Margin="2">
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
@@ -26,8 +26,8 @@
             <Button Name="PumpDirectionButton" Access="Public"/>
             <Label Text="{Loc comp-portable-pump-ui-pump-output-pressure}" />
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <FloatSpinBox HorizontalExpand="True" Name="PumpPressureOutputInput" MinSize="70 0" />
-                <Button Name="SetOutputPressureButton" Access="Public" Text="{Loc comp-portable-pump-ui-pump-set-pressure}"/>
+                <FloatSpinBox HorizontalExpand="True" Access="Public" Name="PumpPressureOutputInput" MinSize="70 0" />
+                <Button Name="MaxOutputPressureButton" Access="Public" Text="{Loc comp-portable-pump-ui-pump-max-pressure}"/>
             </BoxContainer>
         </BoxContainer>
     </BoxContainer>
