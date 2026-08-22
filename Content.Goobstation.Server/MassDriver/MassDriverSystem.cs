@@ -12,6 +12,7 @@ using Content.Shared.Throwing;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
+using Content.Shared.Wires;
 
 namespace Content.Goobstation.Server.MassDriver;
 
@@ -45,9 +46,6 @@ public sealed class MassDriverSystem : EntitySystem
 
     private void OnSignalReceived(Entity<MassDriverComponent> ent, ref SignalReceivedEvent args)
     {
-        if (!TryComp<DeviceLinkSinkComponent>(ent, out var source))
-            return;
-
         if (args.Port == ent.Comp.LaunchPort)
             Drive(ent);
     }
@@ -60,6 +58,8 @@ public sealed class MassDriverSystem : EntitySystem
             return;
         var battery = (ent, batteryComp);
         if (_battery.GetCharge(battery) < ent.Comp.PowerPerObject)
+            return;
+        if (TryComp<WiresPanelComponent>(ent, out var wiresPanel) && wiresPanel.Open)
             return;
 
         // Play animation

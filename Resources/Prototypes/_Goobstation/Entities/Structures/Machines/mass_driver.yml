@@ -10,8 +10,11 @@
     layers:
     - state: icon
       map: [ "enum.MassDriverVisualLayers.Base" ]
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
   - type: Appearance
   - type: Battery
+    netsync: false
     startingCharge: 0
     maxCharge: 6000
   - type: ExaminableBattery
@@ -37,8 +40,7 @@
     idleState: icon
     activeState: firing
   - type: AnimationPlayer
-  - type: DeviceLinkSink
-    ports:
-      - MassDriverLaunch
   - type: Machine
     board: MassDriverCircuitBoard
+  - type: WiresPanel
+  - type: WiresVisuals
