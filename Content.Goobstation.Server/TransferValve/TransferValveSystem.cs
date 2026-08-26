@@ -1,14 +1,15 @@
 using Content.Goobstation.Server.Weapons.Ranged;
 using Content.Goobstation.Shared.TransferValve.Components;
 using Content.Server.Atmos.EntitySystems;
+using Content.Server.Database;
 using Content.Server.DeviceLinking.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Database;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Examine;
-using Content.Shared.Explosion;
 using Content.Shared.Verbs;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Audio.Systems;
@@ -43,7 +44,8 @@ public sealed class TransferValveSystem : EntitySystem
 
         SubscribeLocalEvent<TransferValveComponent, ExaminedEvent>(OnExamined);
 
-        SubscribeLocalEvent<TransferValveComponent, GetVerbsEvent<AlternativeVerb>>(OnGetVerbs);
+        SubscribeLocalEvent<TransferValveComponent, GetVerbsEvent<AlternativeVerb>>(OnGetAlternateVerbs);
+        SubscribeLocalEvent<TransferValveComponent, GetVerbsEvent<ActivationVerb>>(OnGetActivationVerbs);
 
         SubscribeLocalEvent<TransferValveComponent, SignalReceivedEvent>(OnSignalReceived);
 
@@ -98,6 +100,8 @@ public sealed class TransferValveSystem : EntitySystem
     private void UpdateSlot(Entity<TransferValveComponent> ent, ItemSlot slot, AppearanceComponent? appearance, TransferValveVisuals tankLayer)
     {
         _itemSlotsSystem.SetLock(ent, slot, slot.HasItem);
+        if (ent.Comp.Tank1Slot.HasItem && ent.Comp.Tank1Slot.HasItem)
+            _adminLogger.Add(LogType.Explosion, LogImpact.Medium, $"{ToPrettyString(ent):entity} has been fully assembled and ready to detonante.");
         if (appearance != null)
         {
             if (slot.HasItem
@@ -122,16 +126,17 @@ public sealed class TransferValveSystem : EntitySystem
         args.PushMarkup(Loc.GetString("transfer-valve-examine", ("state", ent.Comp.ValveOpen ? "open" : "closed")));
     }
 
-    private void OnGetVerbs(Entity<TransferValveComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
+    private void OnGetAlternateVerbs(Entity<TransferValveComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         if (!args.CanInteract)
             return;
+        var user = args.User;
 
         if (ent.Comp.Tank1Slot.HasItem)
         {
             AlternativeVerb detach1 = new()
             {
-                Act = () => DetachTank(ent, ent.Comp.Tank1Slot),
+                Act = () => DetachTank(ent, ent.Comp.Tank1Slot, user),
                 Text = Loc.GetString("transfer-valve-detach-right-tank"),
                 Priority = 1
             };
@@ -142,19 +147,26 @@ public sealed class TransferValveSystem : EntitySystem
         {
             AlternativeVerb detach2 = new()
             {
-                Act = () => DetachTank(ent, ent.Comp.Tank2Slot),
+                Act = () => DetachTank(ent, ent.Comp.Tank2Slot, user),
                 Text = Loc.GetString("transfer-valve-detach-left-tank"),
                 Priority = 2
             };
             args.Verbs.Add(detach2);
         }
+    }
+
+    private void OnGetActivationVerbs(Entity<TransferValveComponent> ent, ref GetVerbsEvent<ActivationVerb> args)
+    {
+        if (!args.CanInteract)
+            return;
+        var user = args.User;
 
         if (ent.Comp.Tank1Slot.HasItem && ent.Comp.Tank2Slot.HasItem)
         {
             var toggleText = ent.Comp.ValveOpen ? "Close" : "Open";
-            AlternativeVerb toggle = new()
+            ActivationVerb toggle = new()
             {
-                Act = () => ToggleValve(ent),
+                Act = () => ToggleValve(ent, user),
                 Text = Loc.GetString("transfer-valve-toggle-verb", ("action", toggleText)),
                 Priority = 3
             };
@@ -162,7 +174,7 @@ public sealed class TransferValveSystem : EntitySystem
         }
     }
 
-    private void DetachTank(Entity<TransferValveComponent> ent, ItemSlot tankSlot)
+    private void DetachTank(Entity<TransferValveComponent> ent, ItemSlot tankSlot, EntityUid? user = null)
     {
         if (!tankSlot.HasItem)
             return;
@@ -171,14 +183,17 @@ public sealed class TransferValveSystem : EntitySystem
             _audioSystem.PlayPredicted(ent.Comp.CloseValveSound, ent, null);
         ent.Comp.ValveOpen = false;
         _itemSlotsSystem.SetLock(ent, tankSlot, false);
-        _itemSlotsSystem.TryEject(ent, tankSlot, null, out _);
+        if (user != null)
+            _itemSlotsSystem.TryEjectToHands(ent, tankSlot, user);
+        else
+            _itemSlotsSystem.TryEject(ent, tankSlot, user, out var tank);
     }
 
     private void SplitGases(TransferValveComponent component)
     {
         if (!component.ValveOpen ||
-            !_entManager.TryGetComponent<GasTankComponent>(component.Tank1Slot.Item, out GasTankComponent? tank_one) ||
-            !_entManager.TryGetComponent<GasTankComponent>(component.Tank2Slot.Item, out GasTankComponent? tank_two))
+            !_entManager.TryGetComponent<GasTankComponent>(component.Tank1Slot.Item, out var tank_one) ||
+            !_entManager.TryGetComponent<GasTankComponent>(component.Tank2Slot.Item, out var tank_two))
             return;
         GasMixture mix_one = tank_one.Air;
         GasMixture mix_two = tank_two.Air;
@@ -194,8 +209,8 @@ public sealed class TransferValveSystem : EntitySystem
 
     public bool MergeGases(TransferValveComponent component, GasMixture? target = null, bool change_volume = true)
     {
-        if (!_entManager.TryGetComponent<GasTankComponent>(component.Tank1Slot.Item, out GasTankComponent? tank_one) ||
-            !_entManager.TryGetComponent<GasTankComponent>(component.Tank2Slot.Item, out GasTankComponent? tank_two))
+        if (!_entManager.TryGetComponent<GasTankComponent>(component.Tank1Slot.Item, out var tank_one) ||
+            !_entManager.TryGetComponent<GasTankComponent>(component.Tank2Slot.Item, out var tank_two))
             return false;
         GasMixture mix_one = tank_one.Air;
         GasMixture mix_two = tank_two.Air;
@@ -219,16 +234,21 @@ public sealed class TransferValveSystem : EntitySystem
         return true;
     }
 
-    public void ToggleValve(Entity<TransferValveComponent> ent)
+    public void ToggleValve(Entity<TransferValveComponent> ent, EntityUid? user = null)
     {
-        if (!_entManager.TryGetComponent<GasTankComponent>(ent.Comp.Tank1Slot.Item, out GasTankComponent? tank_one) ||
-            !_entManager.TryGetComponent<GasTankComponent>(ent.Comp.Tank2Slot.Item, out GasTankComponent? tank_two))
+        if (!_entManager.TryGetComponent<GasTankComponent>(ent.Comp.Tank1Slot.Item, out var tank_one) ||
+            !_entManager.TryGetComponent<GasTankComponent>(ent.Comp.Tank2Slot.Item, out var tank_two))
             return;
         if (!ent.Comp.ValveOpen)
         {
             ent.Comp.ValveOpen = MergeGases(ent.Comp);
             if (ent.Comp.ValveOpen)
+            {
                 _audioSystem.PlayPredicted(ent.Comp.OpenValveSound, ent, null);
+                var exploded = tank_two.Air.Pressure > tank_two.TankFragmentPressure;
+                _adminLogger.Add(LogType.Explosion, exploded ? LogImpact.High : LogImpact.Medium,
+                    $"{(user != null ? $"{ToPrettyString(user):player} caused " : "")}{ToPrettyString(ent):entity}'s valve to open{(exploded ? " resulting in an explosion." : ".")}");
+            }
         }
         else
         {

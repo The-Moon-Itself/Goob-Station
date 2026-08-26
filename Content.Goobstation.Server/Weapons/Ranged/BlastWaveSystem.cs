@@ -4,7 +4,7 @@ using System.Numerics;
 using Content.Goobstation.Common.BlockTeleport;
 using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Explosion;
-using Npgsql.Replication.PgOutput.Messages;
+using Content.Shared.Projectiles;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
@@ -35,6 +35,8 @@ public sealed class BlastWaveSystem : EntitySystem
         ent.Comp.Origin = _transform.ToMapCoordinates(Transform(ent).Coordinates);
         if (!_prototypeManager.TryIndex<ExplosionPrototype>(ent.Comp.ExplosionType, out var type))
             return;
+        if (_entManager.TryGetComponent<ProjectileComponent>(ent, out var projectile))
+            ent.Comp.Cause = projectile.Shooter;
         ent.Comp.ExplosionProto = type;
         UpdateSpaceMatrix(ent);
     }

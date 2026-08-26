@@ -10,7 +10,7 @@ namespace Content.Goobstation.Shared.Weapons.Ranged;
 
 public abstract partial class SharedBlastCannonSystem : EntitySystem
 {
-    [Dependency] protected readonly MetaDataSystem MetaData = default!;
+    [Dependency] protected readonly MetaDataSystem MetaDataSystem = default!;
     [Dependency] protected readonly ItemSlotsSystem ItemSlotsSystem = default!;
     [Dependency] protected readonly IEntityManager EntManager = default!;
     [Dependency] protected readonly SharedPopupSystem Popup = default!;
@@ -68,7 +68,7 @@ public abstract partial class SharedBlastCannonSystem : EntitySystem
     protected virtual void UpdateAppearance(Entity<BlastCannonComponent> ent)
     {
         var loaded = ent.Comp.TransferValveSlot.HasItem;
-        MetaData.SetEntityName(ent, Loc.GetString(loaded ? "blast-cannon-loaded-name" : "blast-cannon-unloaded-name"));
-        MetaData.SetEntityDescription(ent, Loc.GetString(loaded ? "blast-cannon-loaded-desc" : "blast-cannon-unloaded-desc"));
+        MetaDataSystem.SetEntityName(ent, Loc.GetString(loaded ? "blast-cannon-loaded-name" : "blast-cannon-unloaded-name"));
+        MetaDataSystem.SetEntityDescription(ent, Loc.GetString(loaded ? "blast-cannon-loaded-desc" : "blast-cannon-unloaded-desc"));
     }
 }
