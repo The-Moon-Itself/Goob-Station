@@ -1,0 +1,26 @@
+
+<Document>
+  # Portable Pump
+  The portable pump is a portable machine that can be used to quickly .
+  <Box>
+    <GuideEntityEmbed Entity="PortablePump"/>
+  </Box>
+
+  Similarly to [textlink="canisters" link="GasCanisters"], portable pumps can be used to quickly fill a room whenever [textlink="vents" link="AirVent"] are working too slow, or when a [textlink="vent" link="AirVent"] is not present. They can also be used to siphon gases out of a room as well.
+
+  The portable pump requires [textlink="power" link="Power"] through a nearby [textlink="LV cable" link="VoltageNetworks"] while anchored to function.
+
+  The portable pump can be configured via a GUI to control the direction to pump gas, the target pressure of the output, and to turn the device on and off.
+
+  The pump can be anchored to a [textlink="connector" link="GasCanisters"] to supply it with gas or the drain it for further use.
+
+  Portable pumps have an internal capacity of [color=orange][protodata="PortablePump" comp="PortablePump" member="Volume"/] liters[/color] and a maximum operational pressure of [color=orange][protodata="PortablePump" comp="PortablePump" member="MaximumPressure"/] kPa.
+
+  ## Using Air Tanks with the Portable Pump
+  Portable pumps have a slot for air tanks. When an tank is inserted, the portable pump will treat the tank as the exterior, pumping gas in and out of it instead of the environment.
+
+  This can be used to fill tanks with higher pressures than can be achieved with a gas canister, or to siphon gases from tanks into a [textlink="pipenet" link="PipeNetworks"].
+
+  Caution should be taken when removing a tank from a pump, as the pump will not stop automatically when a tank is removed, and will immediately start pumping gas to or from the environment.
+
+</Document>

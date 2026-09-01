@@ -97,3 +97,6 @@
                 max: 2
           - !type:DoActsBehavior
             acts: [ "Destruction" ]
+  - type: GuideHelp
+    guides:
+    - PortablePump

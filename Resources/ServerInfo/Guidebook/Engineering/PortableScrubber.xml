@@ -2,6 +2,8 @@
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+<!--Goob edit: mentions togglable filter in GUI and inserting a gas tank-->
+
 <Document>
   # Portable Scrubber
   The portable scrubber is a portable machine that can be used to scrub the atmosphere in a room.
@@ -13,7 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
   The portable scrubber requires [textlink="power" link="Power"] through a nearby [textlink="LV cable" link="VoltageNetworks"] to function.
 
-  The portable scrubber automatically starts removing all non-breathable gasses from the room when it is bolted (wrenched) to the floor.
+  The portable scrubber automatically starts removing all non-breathable gasses from the room or an inserted air tank when it is bolted (wrenched) to the floor.
+
+  The exact gases that the portable scrubber will filter can be set via its GUI
 
   It will stop scrubbing when unbolted (unwrenched) from the floor or when its internal volume is full. The scrubber has an internal capacity of [color=orange][protodata="PortableScrubber" comp="PortableScrubber" member="Volume"/] liters[/color].
 

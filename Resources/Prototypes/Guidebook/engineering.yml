@@ -89,6 +89,7 @@
   - AirInjector
   - AirScrubber
   - PortableScrubber
+  - PortablePump # Goobstation
 
 - type: guideEntry
   id: AirVent

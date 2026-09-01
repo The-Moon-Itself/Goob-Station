@@ -15,6 +15,7 @@ guide-entry-rules-nrp = NRP Ruleset
 guide-entry-sm = Supermatter Engine
 guide-entry-automation = Automation
 guide-entry-plumbing = Plumbing
+guide-entry-portable-pump = Portable Pump
 
 guide-entry-alcoholic-drinks = Alcoholic Drinks
 guide-entry-non-alcoholic-drinks = Non-Alcoholic Drinks
