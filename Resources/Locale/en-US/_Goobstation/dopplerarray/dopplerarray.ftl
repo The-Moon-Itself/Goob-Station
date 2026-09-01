@@ -24,3 +24,4 @@ doppler-array-research-not-peak = Data already captured. Aborting.
 doppler-array-research-points-generated = Explosion details and mixture analyzed with a reward of {$research} research points.
 doppler-array-research-profit-generated = Explosion details and mixture analyzed and sold to the highest bidder for ${$profit}.
 doppler-array-research-points-and-profit-generated = Explosion details and mixture analyzed and sold to the highest bidder for ${$profit} with a reward of {$research} research points.
+doppler-array-out-of-funds = Buyer not found, no profit generated.

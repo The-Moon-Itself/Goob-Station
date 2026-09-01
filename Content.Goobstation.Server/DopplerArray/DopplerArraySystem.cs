@@ -126,7 +126,7 @@ namespace Content.Goobstation.Server.DopplerArray
                 researchPayout = -1 * _research.GetServerPointsByType(client.Server.Value, ResearchServerPointSources.Toxins);
 
             // y = x/(x+b) -> yx+yb = x -> yb = x(1-y) -> b = x(1-y)/y
-            // y = 0.9, x = RiseTime -> RiseTime * (1-0.9)/0.9 = RiseTime*0.1111
+            // y = 0.9, x = RiseTime -> b = RiseTime * (1-0.9)/0.9 -> b = RiseTime*0.1111
             var b = ent.Comp.ResearchRiseTime * 0.1111f;
             researchPayout += (int) Math.Round(ent.Comp.MaxResearchPayout * record.TheoreticalRadius / (record.TheoreticalRadius + b));
 
@@ -140,12 +140,17 @@ namespace Content.Goobstation.Server.DopplerArray
             if (ent.Comp.ResearchEnabled && (client?.Server.HasValue ?? false))
                 _research.ModifyServerPoints(client.Server.Value, researchPayout, null, ResearchServerPointSources.Toxins);
             else if (ent.Comp.ResearchEnabled && client != null)
+            {
                 QueueMessage(ent, Loc.GetString("doppler-array-research-missing-server"));
+                return; //No cheesing getting more money from a research doppler by just disconnecting it from a server
+            }
 
             var stationUid = _station.GetOwningStation(ent);
             if (ent.Comp.ProfitEnabled && TryComp(stationUid, out StationBankAccountComponent? bank))
             {
                 profitPayout = Math.Min((int) (ent.Comp.ProfitMultiplier * researchPayout), _toxinsPayoutBudget);
+                if (_toxinsPayoutBudget <= 0)
+                    QueueMessage(ent, Loc.GetString("doppler-array-out-of-funds"));
                 _toxinsPayoutBudget -= profitPayout;
                 _cargo.UpdateBankAccount((stationUid.Value, bank), profitPayout, ent.Comp.LinkedAccount);
             }

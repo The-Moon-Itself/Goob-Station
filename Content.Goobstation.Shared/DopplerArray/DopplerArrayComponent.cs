@@ -1,7 +1,6 @@
 
-using Content.Goobstation.Shared.DopplerArray;
 using Content.Shared.Cargo.Prototypes;
-using Content.Shared.Research.Components;
+using Content.Shared.Guidebook;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
@@ -13,8 +12,8 @@ public sealed partial class DopplerArrayComponent : Component
     /// <summary>
     /// How far the doppler array can detect explosions.
     /// </summary>
-    [DataField]
-    public float MaxDistance = 150f;
+    [DataField, GuidebookData]
+    public float MaxDistance = 250f;
 
     /// <summary>
     /// How many seconds after sensing an explosion until the array is ready to sense the next explosion.
@@ -57,13 +56,13 @@ public sealed partial class DopplerArrayComponent : Component
     /// The maximum amount of research points the array can award.
     /// Larger bombs approach this asymptotically.
     /// </summary>
-    [DataField]
+    [DataField, GuidebookData]
     public float MaxResearchPayout = 30000;
 
     /// <summary>
     /// The explosion range needed to payout 90% of the max research point payout.
     /// </summary>
-    [DataField]
+    [DataField, GuidebookData]
     public float ResearchRiseTime = 50;
 
     /// <summary>
@@ -81,12 +80,12 @@ public sealed partial class DopplerArrayComponent : Component
     /// <summary>
     /// How many credits the science department should be rewarded per research point gained.
     /// </summary>
-    [DataField]
+    [DataField, GuidebookData]
     public float ProfitMultiplier = 1;
 
     /// <summary>
     /// The minimum radius required to give a payout
     /// </summary>
-    [DataField]
-    public float PayoutRequiredRadius = 8;
+    [DataField, GuidebookData]
+    public float PayoutRequiredRadius = 15;
 }
