@@ -28,4 +28,10 @@ public sealed partial class BlastCannonComponent : Component
     /// </summary>
     [DataField]
     public float? DebugPower = null;
+
+    /// <summary>
+    /// Scales knockback on a GunRecoil component by the blastwave's power if the blast cannon isn't wielded on firing.
+    /// </summary>
+    [DataField]
+    public float RecoilMultiplier = 2f;
 }

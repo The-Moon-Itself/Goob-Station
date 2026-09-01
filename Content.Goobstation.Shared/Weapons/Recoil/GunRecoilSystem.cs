@@ -3,6 +3,7 @@
 using Content.Shared.Stunnable;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Ranged.Systems;
+using Content.Shared.Wieldable.Components;
 using Robust.Shared.Physics.Components;
 
 namespace Content.Goobstation.Shared.Weapons.Recoil;
@@ -12,6 +13,7 @@ public sealed class GunRecoilSystem : EntitySystem
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly IEntityManager _entManager = default!;
 
     public override void Initialize()
     {
@@ -22,6 +24,8 @@ public sealed class GunRecoilSystem : EntitySystem
 
     private void OnShoot(Entity<GunRecoilComponent> ent, ref GunShotEvent args)
     {
+        if (ent.Comp.NegatedIfWielded && _entManager.TryGetComponent<WieldableComponent>(ent, out var wieldable) && wieldable.Wielded)
+            return;
         var dir = -_transform.GetWorldRotation(args.User).ToWorldVec();
         var range = ent.Comp.BaseThrowRange;
         var speed = ent.Comp.BaseThrowSpeed;

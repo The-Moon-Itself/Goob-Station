@@ -4,7 +4,7 @@ using Robust.Shared.GameStates;
 
 namespace Content.Goobstation.Shared.Weapons.Recoil;
 
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class GunRecoilComponent : Component
 {
     [DataField]
@@ -17,6 +17,9 @@ public sealed partial class GunRecoilComponent : Component
     public bool AffectedByMass = true;
 
     [DataField]
+    public bool NegatedIfWielded = false;
+
+    [DataField, AutoNetworkedField]
     public float MassMultiplier = 70f;
 
     [DataField]
