@@ -5,6 +5,8 @@ using Content.Shared.Popups;
 using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Shared.Containers;
 using Content.Shared.Weapons.Ranged.Events;
+using Content.Goobstation.Shared.Weapons.Recoil;
+using Content.Shared.Wieldable.Components;
 
 namespace Content.Goobstation.Shared.Weapons.Ranged;
 
@@ -20,13 +22,10 @@ public abstract partial class SharedBlastCannonSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<BlastCannonComponent, ComponentInit>(OnComponentInit);
-        SubscribeLocalEvent<BlastCannonComponent, AttemptShootEvent>(OnShootAttempt);
-        SubscribeLocalEvent<BlastCannonComponent, AmmoShotEvent>(OnFired);
-        SubscribeLocalEvent<BlastCannonComponent, ContainerIsInsertingAttemptEvent>(OnItemAddedAttempt);
         SubscribeLocalEvent<BlastCannonComponent, EntInsertedIntoContainerMessage>(OnEntInserted);
         SubscribeLocalEvent<BlastCannonComponent, EntRemovedFromContainerMessage>(OnEntRemoved);
     }
-    protected void OnComponentInit(Entity<BlastCannonComponent> ent, ref ComponentInit args)
+    private void OnComponentInit(Entity<BlastCannonComponent> ent, ref ComponentInit args)
     {
         if (ItemSlotsSystem.TryGetSlot(ent.Owner, TTVSlotId, out var slot))
             ent.Comp.TransferValveSlot = slot;
@@ -36,21 +35,6 @@ public abstract partial class SharedBlastCannonSystem : EntitySystem
         UpdateAppearance(ent);
     }
 
-    protected virtual void OnShootAttempt(Entity<BlastCannonComponent> ent, ref AttemptShootEvent args)
-    {
-        return;
-    }
-
-    protected virtual void OnFired(Entity<BlastCannonComponent> ent, ref AmmoShotEvent args)
-    {
-        return;
-    }
-
-    protected virtual void OnItemAddedAttempt(Entity<BlastCannonComponent> ent, ref ContainerIsInsertingAttemptEvent args)
-    {
-        return;
-    }
-
     protected void OnEntInserted(Entity<BlastCannonComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
         if (!ent.Comp.Initialized || args.Container.ID != TTVSlotId)
@@ -58,7 +42,7 @@ public abstract partial class SharedBlastCannonSystem : EntitySystem
         UpdateAppearance(ent);
     }
 
-    protected void OnEntRemoved(Entity<BlastCannonComponent> ent, ref EntRemovedFromContainerMessage args)
+    private void OnEntRemoved(Entity<BlastCannonComponent> ent, ref EntRemovedFromContainerMessage args)
     {
         if (!ent.Comp.Initialized || args.Container.ID != TTVSlotId)
             return;

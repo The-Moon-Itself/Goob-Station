@@ -2,3 +2,8 @@
   id: Xenobiology
   name: "Xenobiology"
   text: "/ServerInfo/_Goobstation/Guidebook/Science/Xenobiology.xml"
+
+- type: guideEntry
+  id: ToxinsScience
+  name: "Toxins"
+  text: "/ServerInfo/_Goobstation/Guidebook/Science/Toxins.xml"

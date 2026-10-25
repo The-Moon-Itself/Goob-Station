@@ -3,6 +3,7 @@ using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.Atmos;
 using Robust.Shared.GameStates;
+using Content.Shared.Guidebook;
 
 namespace Content.Goobstation.Shared.Atmos.Portable;
 
@@ -24,7 +25,7 @@ public sealed partial class PortablePumpComponent : Component
     [DataField, AutoNetworkedField]
     public float TargetPressure { get; set; } = Atmospherics.OneAtmosphere;
 
-    [DataField, AutoNetworkedField]
+    [DataField, AutoNetworkedField, GuidebookData]
     public float MaximumPressure { get; set; } = 25f * Atmospherics.OneAtmosphere;
 
     /// <summary>
@@ -35,4 +36,8 @@ public sealed partial class PortablePumpComponent : Component
 
     [DataField]
     public ItemSlot GasTankSlot = new();
+
+
+    [GuidebookData]
+    public float Volume => Air.Volume;
 }

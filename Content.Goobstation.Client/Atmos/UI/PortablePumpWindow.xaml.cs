@@ -85,7 +85,7 @@ public sealed partial class PortablePumpWindow : FancyWindow
 
     private void UpdatePumpDirectionButton()
     {
-        PumpDirectionButton.Text = Loc.GetString(_directionFormatString, ("target", _hasTank ? "Tank" : "Turf"), ("internal", _connected ? "Port" : "Pump"));
+        PumpDirectionButton.Text = Loc.GetString(_directionFormatString, ("target", _hasTank ? "Tank" : "Atmosphere"), ("internal", _connected ? "Port" : "Pump"));
     }
 
 }

@@ -1,0 +1,153 @@
+<Document>
+# Toxins
+### or, how I learned to stop worrying and love the maxcap
+
+Toxins is a subdepartment within science dedicated to creating bombs to be sold for research and profit, or for [textlink="nefarious purposes" link="Antagonists"].
+
+  <Box>
+    <GuideEntityEmbed Entity="TransferValveGuidebookIcon" Caption="This is a bomb. If you find this, drop and run."/>
+  </Box>
+
+## Locations
+###  Toxins Lab
+The [color=#a4885c]Toxins Lab[/color] is where you'll be spending most of your time. Here you will be preparing bomb mixes and assembling your bombs.
+It's equipped with a burn chamber to synthesize gases you are not immediately provided, such as tritium. You are also provided with some [textlink="gas manipulation" link="GasManipulation"] machinery, and an RPD to modify [textlink="pipenets" link="PipeNetworks"].
+
+If a toxins lab is not present on your station, the Xenoarcheology Lab can make a good substitute, the artifact testing chamber can be repurposed to a burn chamber. You may need to ask an [textlink="atmospheric techinician" link="Atmospherics"] for some of their equipment to fully stock the lab.
+
+### Canister Storage
+Most research departments provide you with some [textlink="gas canisters" link="GasCanisters"] to get you started in a small storage room somewhere in science. You should be cautious who you let into here, as some of these gases, such as plasma can be dangerous to hand out.
+You can sometimes find [textlink="portable scrubbers" link="PortableScrubber"] and [textlink="portable pumps" link="PortablePump"] here if they aren't present in the Toxins Lab. If they're not in either, you can find or make some in [textlink="atmospherics" link="Atmospherics"].
+
+### Toxins Launch and Toxins Test Satellite
+[color=#a4885c]Toxins Launch[/color] is a small room on the edge of the station, usually near the toxins lab that contains a tachyon-dopper array and telescreen to observe your explosions. Here you can launch bombs to the [color=#a4885c]Toxins Test Satellite[/color] via a mass driver.
+
+The satellite is a small room exposed to space attached to the station via lattice far enough away for any bombs detonated within to be unable to reach the station. There's also a wireless camera present to give you a close look via the telescreen in Toxins Launch without putting yourself in danger.
+
+
+## Equipment
+There are two pieces of equipment that are specific to toxins research:
+
+  <Box>
+    <GuideEntityEmbed Entity="TransferValve"/>
+  </Box>
+
+A [color=#a4885c]Tank Transfer Valve[/color], or TTV for short, is a handheld pipe that two gas tanks can be attached to. The toxins lab has a few of these initially, but more can be ordered from cargo. When activated in hand or from a [textlink="linked signal" link="Networking"], the valve will open, instantaneously mixing air in the two tanks.
+
+<!-- I couldn't figure out how to get the GuidebookData tag to work on GasTankComponent.TankFragmentPressure. This is accurate for now but someone should really figure out how to get that to work.-->
+When the pressure of a gas tank exceeds [color=orange]5066 kPa[/color], the tank will explode, increasing in strength the higher the pressure in the tank. Any gas reactions will also occur before a tank ruptures. This makes exothermic reactions, such as tritium or plasma burns, ideal for giving a bomb a bit of a boost in pressure.
+These explosions caps out at a radius of about [color=orange]26[/color] tiles, gas tank bombs that reach this radius are refered to as [bold]maxcaps[/bold].
+
+  <Box>
+    <GuideEntityEmbed Entity="ResearchDopplerArray"/>
+  </Box>
+The [color=#a4885c]Tachyon-Doppler Research Array[/color] is the alibi that turns crazed mass bombers into respectable Nanotrasen approved scientists. You can find it in Toxins Launch, or make one once its circuit board is [textlink="researched" link="Technologies"].
+
+While powered, the doppler array will detect any explosions within [color=orange][protodata="ResearchDopplerArray" comp="DopplerArray" member="MaxDistance"/] tiles[/color] of it, with a small cooldown between detections. Detected explosions are recorded in the doppler array, recording when and where the epicenter was, and both the [color=orange]theoretical[/color], uncapped radius of the explosion, and the [color=orange]actual[/color], capped radius. You can view these records in the doppler array's GUI.
+
+The doppler array will annouce aloud any detected explosions, you can use a nearby intercom to broadcast the annoucement over the radio which may quell any concerns the crew might have when a the sound of research bomb echoes through the station.
+
+The doppler array will pay out [color=#c96dbf]research points[/color] and [color=cyan]spesos[/color] for detected bombs with a [bold]theoretical radius[/bold] exceeding [color=orange][protodata="ResearchDopplerArray" comp="DopplerArray" member="PayoutRequiredRadius"/] tiles[/color] while connected to a [textlink="server" link="Science"].
+
+The payout follows a hyperbolic curve, asymptotally approaching a maximum payout of [color=#c96dbf][protodata="ResearchDopplerArray" comp="DopplerArray" member="MaxResearchPayout"/] research points[/color], reaching 90% of that value at a radius of [protodata="ResearchDopplerArray" comp="DopplerArray" member="ResearchRiseTime"/] tiles. Research servers can only gain so much data from repeated bomb experiments. When another research bomb is recorded, it only pays out the difference between its research generated and the best bomb record the server has seen.
+The doppler array will also pay out [color=cyan][protodata="ResearchDopplerArray" comp="DopplerArray" member="ProfitMultiplier"/] spesos[/color] per research point generated to the Science department budget.
+
+## Bomb Making 101
+### How to make maxcap fast
+
+A basic max cap will be composed of a cold mix of two thirds oxygen and one third tritium cooled to 73.15K, and  a hot mix of plasma heated to as high as possible.
+
+- Grab two tanks from gas tank dispenser and siphon all the gas from them with, these will be the tanks we add to the TTV later.
+
+- Connect an oxygen canister and portable scrubber to a freezer to cool it down to 73.15K, once the gas has cooled, insert one of your tanks at fill it to 844 kPa.
+
+- In the burn chamber, set the scrubber to scrub only tritium, get the help of an atmos tech if you don't have access to the air alarm.
+
+- Connect another freezer and portable pump to the scrubber, set the freezer to 73.15K.
+
+- Use a passive vent to connect a pipeline from the burn chamber to an in-line filter outside the burn chamber. Set the filter to plasma, but do not turn it on. Put a third portable scrubber on the output of the filter.
+
+- Use oxygen and plasma tanks to create a 97% oxygen, 3% plasma mix. Pump and ignite this burn into the burn chamber. You should start to be producing tritium.
+
+- When the burn is near over, turn on the in-line filter to recover some super heated plasma. Put your second empty tank in the portable pump and fill it with 2533 kPa of plasma.
+
+- Once no more tritium is being produced, and your collected tritium has cooled down to 73.15K, place your tank with chilled oxygen in the tritium pump, and fill it up to 2533 kPa.
+
+- Attach both tanks to a TTV, use a multitool to link the TTV to a remote signaller.
+
+- Bring the TTV to the toxins launch site to launch the bomb to the test satellite.
+
+- Use the signaler to detonate the bomb and collect your research points and profit.
+
+[textlink="Use this knowledge wisely" link="DefaultRuleset"]
+
+## Bomb Making 102
+### How do maxcaps work
+
+[color=#a4885c]WARNING, nerd speak ahead[/color]
+
+The yield of your bomb will entirely come down to the gas in the two tanks you attach to your TTV. All gases on the station act as [bold]ideal gases[/bold], following the equation
+
+  <Box>
+      [color=cyan]PV = nRT[/color]
+  </Box>
+
+Your goal is to maximize the pressure when the tanks are merged. [color=cyan]R[/color] is a constant, and tanks are rigid with constant volume [color=cyan]V[/color].
+This leaves [color=cyan]n[/color], the amount of moles, and [color=cyan]T[/color], the temperature as parameters to vary, increasing either one will result in greater pressure.
+
+Unfortunately, moles and temperature are inversely proportional when pressure and volume is constant. Since most methods of pumping gas into tanks have a maximum pressure, you'll often find that increasing temperature gives a low mole count hot mix, and conversely lowering temperature gives a high mole count cold mix.
+
+The pressure jump from a toxins bomb comes from how a mixture's temperature changes when gases are mixed.
+A gas mixture's temperature is calculated from the mixture's [color=cyan]heat capacity, C[/color] and [color=cyan]thermal energy, E[/color].
+Heat capacity and thermal energy are conserved when gases mix. the energy or heat capacity of the resulting mixture is the sum of the energies or heat capacities of the two original gases.
+
+  <Box>
+      [color=cyan]T = E/C[/color]
+  </Box>
+
+Every species of gas has an intrisic [color=cyan]specific heat capacity, c[/color], and the entire mixture's heat capacity is the sum of each present gases' specific heat capacity multipled by that gas' mole count
+
+
+  <Box>
+      [color=cyan]C = n_oxygen*c_oxygen + n_nitrogen*c_nitrogen + n_plasma*c_plasma + ...[/color]
+  </Box>
+
+If we look at this in terms of the [color=cyan]mole fraction, x[/color] of each gas species, where [color=cyan]x_species = n_species/n_mix[/color], we can treat the gas mixture itself as having a specific heat capacity
+
+  <Box>
+      [color=cyan]C = n_mix*c_mix = x_oxygen*c_oxygen + x_nitrogen*c_nitrogen + x_plasma*c_plasma + ...[/color]
+  </Box>
+
+We can use this along with the ideal gas law to find another way to determine how much energy is in the tank
+
+  <Box>
+      [color=cyan]PV = nRT[/color]
+  </Box>
+  <Box>
+      [color=cyan]PV = nRE/(nc)[/color]
+  </Box>
+  <Box>
+      [color=cyan]PVc/R = E[/color]
+  </Box>
+
+Note here, [color=cyan]R[/color] is the gas constant.
+[color=cyan]P, pressure[/color] and [color=cyan]V, volume[/color] are limited by our equipment: our tanks and pumps, so they are also constant for us.
+This leaves [color=cyan]c, specific heat capacity[/color], which is determined by our gas mixture, as the only variable that lets us change how much energy is in the tank. The higher [color=cyan]c[/color] is, the more energy we have.
+[bold]Mole count has no impact on thermal energy in these conditions[/bold].
+
+However, mole count does impact our [color=cyan]heat capacity, C = n*c[/cyan].
+Since [color=cyan]C[/color] is conserved on mix, and a lower [color=cyan]C[/color] results in a higher temperature, and thus higher pressure,
+we should minimize mole count on a mixture with high specific heat.
+
+This leads to why we use a [italic]cold[/italic] oxygen mix and a [italic]hot[/italic] plasma mix.
+Oxygen has a low specific heat capacity, so using it to supply our mole count for pressure won't tank the heat capacity of the mixture.
+Plasma has a very high specific heat capacity, so it supplies our thermal energy, and keeping it hot lowers the mole count in the tank, also reduring our heat capacity.
+
+Tritium is used not just because it is combustable, pumping more energy into the mixture via burning when the tanks are mixed,
+but also because tritium has an extremely low heat capacity. This is why it's added into the oxygen mix as opposed to the plasma mix.
+
+Theoretically, if you could get your hands on a gas with an even higher specific heat capacity than plasma, such as frezon,
+then it would result in an even higher pressure yield, provided you could figure out how to super heat it.
+
+
+</Document>

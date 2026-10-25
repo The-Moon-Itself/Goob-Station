@@ -16,3 +16,8 @@
   id: Plumbing
   name: guide-entry-plumbing
   text: "/ServerInfo/_Goobstation/Guidebook/Engineering/Plumbing.xml"
+
+- type: guideEntry
+  id: PortablePump
+  name: guide-entry-portable-pump
+  text: "/ServerInfo/_Goobstation/Guidebook/Engineering/PortablePump.xml"

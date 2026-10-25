@@ -56,3 +56,23 @@
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
 
+# Because guidebooks have to show entities, not arbitrary images. Please do not actually use this in game.
+- type: entity
+  parent: BaseItem
+  id: TransferValveGuidebookIcon
+  name: Tank Transfer Valve Cutout
+  description: A very realistic looking cardboard cutout of a tank transfer valve
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Weapons/Bombs/Transfervalve.rsi
+    layers:
+    - state: valve
+    - state: oxygen
+      offset: "0, 0.0625"
+    - state: plasma
+      offset: "0, 0.0625"
+      scale: "-1, 1"
+  - type: Item
+    sprite: _Goobstation/Objects/Weapons/Bombs/Transfervalve.rsi
+    layers:
+    - state: valve_1
