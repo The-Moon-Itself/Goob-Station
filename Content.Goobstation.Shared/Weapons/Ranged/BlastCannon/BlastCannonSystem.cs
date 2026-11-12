@@ -12,10 +12,10 @@ namespace Content.Goobstation.Shared.Weapons.Ranged;
 
 public abstract partial class SharedBlastCannonSystem : EntitySystem
 {
-    [Dependency] protected readonly MetaDataSystem MetaDataSystem = default!;
-    [Dependency] protected readonly ItemSlotsSystem ItemSlotsSystem = default!;
-    [Dependency] protected readonly IEntityManager EntManager = default!;
-    [Dependency] protected readonly SharedPopupSystem Popup = default!;
+    [Dependency] protected MetaDataSystem MetaDataSystem = default!;
+    [Dependency] protected ItemSlotsSystem ItemSlotsSystem = default!;
+    [Dependency] protected IEntityManager EntManager = default!;
+    [Dependency] protected SharedPopupSystem Popup = default!;
 
     protected const string TTVSlotId = "TransferValveSlot";
     public override void Initialize()

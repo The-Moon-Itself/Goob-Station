@@ -1,5 +1,6 @@
 
 using Content.Shared.DeviceLinking;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Goobstation.Server.MassDriver;
@@ -47,6 +48,6 @@ public sealed partial class MassDriverComponent : Component
     /// <summary>
     /// The signal port to activate the driver
     /// </summary>
-    [DataField("launchPort", customTypeSerializer: typeof(PrototypeIdSerializer<SinkPortPrototype>))]
-    public string LaunchPort = "MassDriverLaunch";
+    [DataField]
+    public ProtoId<SinkPortPrototype> LaunchPort = "MassDriverLaunch";
 }

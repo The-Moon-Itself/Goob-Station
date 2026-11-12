@@ -52,6 +52,7 @@ public sealed partial class PortablePumpWindow : FancyWindow
 
     public void SetConnected(bool connected)
     {
+        _connected = connected;
         PumpConnectedLabel.SetMarkup(Loc.GetString(connected ? "comp-portable-pump-ui-connected" : "comp-portable-scrubber-ui-disconnected"));
         UpdatePumpDirectionButton();
     }

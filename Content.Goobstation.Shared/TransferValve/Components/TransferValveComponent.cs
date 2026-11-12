@@ -1,6 +1,7 @@
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.DeviceLinking;
 using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
@@ -49,8 +50,8 @@ public sealed partial class TransferValveComponent : Component
     /// </summary>
     public TimeSpan NextToggle = TimeSpan.Zero;
 
-    [DataField("togglePort", customTypeSerializer: typeof(PrototypeIdSerializer<SinkPortPrototype>))]
-    public string TogglePort = "Toggle";
+    [DataField]
+    public ProtoId<SinkPortPrototype> TogglePort = "Toggle";
 
     /// <summary>
     /// A debounce to guard against rapid signalling for the TTV to open before atmos can process the merge
