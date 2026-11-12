@@ -94,7 +94,7 @@ uplink-adv-mimery-name = Guide to Advanced Mimery Series
 uplink-adv-mimery-desc = The classical two part series on how to further hone your mime skills. Upon studying the series, the user should be able to make 3x1 invisible walls, and shoot bullets out of their fingers.
 
 uplink-blast-cannon-name = Blast Cannon
-uplink-blast-cannon-desc = A highly specialized weapon, the Blast Cannon is actually relatively simple. It contains an attachment for a tank transfer valve mounted to an angled pipe specially constructed withstand extreme pressure and temperatures, and has a mechanical trigger for triggering the transfer valve. Essentially, it turns the explosive force of a bomb into a narrow-angle blast wave projectile. Aspiring scientists may find this highly useful, as forcing the pressure shockwave into a narrow angle seems to be able to bypass whatever quirk of physics disallows explosive ranges above a certain distance, allowing for the device to use the theoretical yield of a transfer valve bomb, instead of the factual yield.
+uplink-blast-cannon-desc = A highly specialized weapon, the Blast Cannon contains a mount for a tank transfer valve at the top. When the trigger is pulled, the valve is openned, and the resulting blast is channelled into a narrow blastwave shot out the end of the barrel. Some strange quirk of the design allows the blast to bypass the usual blast radius limit of transfer valves, resutling in the blastwave using the entire theoretical yield of the bomb instead of the factual yield.
 
 # Weapons
 
